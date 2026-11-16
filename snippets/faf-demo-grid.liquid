@@ -1,0 +1,177 @@
+{% doc %}
+  House of FAF: demo products grid. Eight demo cards built from theme assets, shown on the
+  collection page while the store has no products. Replace by adding real products.
+
+  @example
+  {% render 'faf-demo-grid' %}
+{% enddoc %}
+
+{% liquid
+  assign demo_handles = 'farah-tweed-jacket|yara-blazer-set|layal-lace-blouse|dalia-wide-leg-trouser|maya-slip-dress|noor-halter-top|rima-tailored-trouser|lina-pinafore-dress' | split: '|'
+  assign demo_titles = 'Farah Tweed Jacket|Yara Blazer Set|Layal Lace Blouse|Dalia Wide-Leg Trouser|Maya Slip Dress|Noor Halter Top|Rima Tailored Trouser|Lina Pinafore Dress' | split: '|'
+  assign demo_prices = '$245|$320|$130|$160|$210|$95|$150|$230' | split: '|'
+  assign demo_compare = '|$380||||||' | split: '|'
+  assign demo_badges = 'New|Sale||||New|New|Sold out' | split: '|'
+%}
+
+<div class="faf-demo-grid">
+  <p class="faf-demo-grid__count">{{ demo_handles.size }} pieces</p>
+  <ul class="faf-demo-grid__list" role="list">
+    {% for handle in demo_handles %}
+      {% liquid
+        assign img_1 = 'faf-demo-' | append: handle | append: '-1.jpg'
+        assign img_2 = 'faf-demo-' | append: handle | append: '-2.jpg'
+        assign badge = demo_badges[forloop.index0]
+        assign compare = demo_compare[forloop.index0]
+      %}
+      <li class="faf-demo-card">
+        <span class="faf-demo-card__link">
+          <span class="faf-demo-card__media">
+            <img class="faf-demo-card__image" src="{{ img_1 | asset_url }}" alt="{{ demo_titles[forloop.index0] }}" loading="lazy" width="900" height="1200">
+            <img class="faf-demo-card__image faf-demo-card__image--hover" src="{{ img_2 | asset_url }}" alt="" loading="lazy" width="900" height="1200">
+            {% if badge != blank %}
+              <span class="faf-demo-card__badge{% if badge == 'Sale' %} faf-demo-card__badge--sale{% elsif badge == 'Sold out' %} faf-demo-card__badge--soldout{% endif %}">
+                {{- badge -}}
+              </span>
+            {% endif %}
+          </span>
+          <span class="faf-demo-card__title">{{ demo_titles[forloop.index0] }}</span>
+          <span class="faf-demo-card__price">
+            {% if compare != blank %}
+              <span class="faf-demo-card__price--sale">{{ demo_prices[forloop.index0] }}</span>
+              <s class="faf-demo-card__price--compare">{{ compare }}</s>
+            {% else %}
+              {{ demo_prices[forloop.index0] }}
+            {% endif %}
+          </span>
+        </span>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+
+{% stylesheet %}
+  /* The theme's own "No products found" text; this snippet only renders when the store has no products */
+  .shopify-section .main-collection-grid__empty {
+    display: none;
+  }
+
+  .faf-demo-grid {
+    padding: 24px 16px 72px;
+    color: #000;
+  }
+
+  .faf-demo-grid__count {
+    margin: 0 0 20px;
+    font-family: var(--font-subheading--family);
+    font-weight: var(--font-subheading--weight);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-align: end;
+  }
+
+  .faf-demo-grid__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px 8px;
+  }
+
+  .faf-demo-card__link {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .faf-demo-card__media {
+    position: relative;
+    display: block;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    background: var(--faf-stone);
+    margin-bottom: 8px;
+  }
+
+  .faf-demo-card__image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+  }
+
+  .faf-demo-card__image--hover {
+    opacity: 0;
+    transition: opacity 0.45s ease;
+  }
+
+  @media (hover: hover) {
+    .faf-demo-card__link:hover .faf-demo-card__image--hover {
+      opacity: 1;
+    }
+  }
+
+  .faf-demo-card__badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 5px 9px;
+    background: #fff;
+    color: #000;
+    font-family: var(--font-accent--family);
+    font-weight: var(--font-accent--weight);
+    font-size: 0.625rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  .faf-demo-card__badge--sale {
+    background: var(--faf-red);
+    color: #fff;
+  }
+
+  .faf-demo-card__badge--soldout {
+    background: var(--faf-stone);
+  }
+
+  .faf-demo-card__title {
+    font-family: var(--font-subheading--family);
+    font-weight: var(--font-subheading--weight);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1.3;
+  }
+
+  .faf-demo-card__price {
+    display: flex;
+    gap: 8px;
+    font-size: 0.8125rem;
+    letter-spacing: 0.04em;
+    line-height: 1;
+  }
+
+  .faf-demo-card__price--sale {
+    color: var(--faf-red);
+  }
+
+  .faf-demo-card__price--compare {
+    opacity: 0.6;
+  }
+
+  @media screen and (min-width: 750px) {
+    .faf-demo-grid {
+      padding: 32px 40px 96px;
+    }
+
+    .faf-demo-grid__list {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 48px 8px;
+    }
+  }
+{% endstylesheet %}

@@ -1,0 +1,77 @@
+{
+  "sections": {
+    "faf_hero": {
+      "type": "faf-hero",
+      "settings": {
+        "eyebrow": "Just in",
+        "heading": "New Arrivals",
+        "text": "",
+        "label": "Shop now",
+        "link": "shopify://collections/all",
+        "text_position": "right",
+        "demo_image": "faf-demo-hero-sofa.jpg",
+        "focus": "24% center",
+        "flourish": "accent",
+        "motion": "subtle"
+      }
+    },
+    "faf_bestsellers": {
+      "type": "faf-product-row",
+      "settings": {
+        "heading": "Bestsellers",
+        "collection": "bestsellers",
+        "limit": 4,
+        "link_label": "View all"
+      }
+    },
+    "faf_pattern": {
+      "type": "faf-pattern-band",
+      "settings": {
+        "height": 200,
+        "height_mobile": 280,
+        "label": "House of FAF",
+        "sublabel": "Fashion brand"
+      }
+    },
+    "faf_editorial": {
+      "type": "faf-editorial",
+      "settings": {
+        "eyebrow_1": "Look 01",
+        "caption_1": "The tweed jacket, worn softly.",
+        "link_1": "shopify://collections/all",
+        "eyebrow_2": "Look 02",
+        "caption_2": "Ivory tailoring for quiet days.",
+        "link_2": "shopify://collections/all"
+      }
+    },
+    "faf_ribbon": {
+      "type": "faf-ribbon",
+      "settings": {
+        "item_1": "Ready-to-wear",
+        "item_2": "Timeless pieces",
+        "item_3": "Modern feminine",
+        "item_4": "",
+        "tone": "noir"
+      }
+    },
+    "faf_statement": {
+      "type": "faf-statement-classic",
+      "settings": {
+        "tone": "stone",
+        "show_monogram": true,
+        "mark_size": "large",
+        "text": "More than fashion, FAF is a personal expression of confidence, style, and identity.",
+        "label": "The House",
+        "link": "shopify://pages/contact"
+      }
+    }
+  },
+  "order": [
+    "faf_hero",
+    "faf_bestsellers",
+    "faf_pattern",
+    "faf_editorial",
+    "faf_ribbon",
+    "faf_statement"
+  ]
+}

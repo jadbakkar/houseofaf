@@ -1,0 +1,411 @@
+{% comment %}
+  Section contract.
+  House of FAF: the site footer. Black main area with the monogram and a newsletter
+  sign-up, link columns (blocks), and a large spaced wordmark; a black bottom bar with
+  the copyright, the visitor's country and currency, and payment icons.
+  Column links are plain label + URL pairs so demo content works before menus exist.
+  @example
+  <!-- Footer group: the only enabled section. Columns: Client Services, The House, Legal, Follow us -->
+{% endcomment %}
+
+<div class="faf-footer" style="--faf-mark: url('{{ 'faf-monogram.svg' | asset_url }}');">
+  <div class="faf-footer__main">
+    <div class="faf-footer__top">
+      <a class="faf-footer__home" href="{{ routes.root_url }}" aria-label="{{ section.settings.copyright_name | escape }}">
+        <span class="faf-footer__mark faf-mark" aria-hidden="true"></span>
+      </a>
+
+      <div class="faf-footer__newsletter">
+        {% if section.settings.newsletter_heading != blank %}
+          <h2 class="faf-footer__heading">{{ section.settings.newsletter_heading | escape }}</h2>
+        {% endif %}
+        {% if section.settings.newsletter_text != blank %}
+          <p class="faf-footer__lead">{{ section.settings.newsletter_text | escape }}</p>
+        {% endif %}
+        {% assign form_id = 'FafFooterNewsletter-' | append: section.id %}
+        {% form 'customer', id: form_id, class: 'faf-footer__form' %}
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          <label class="faf-footer__label" for="FafFooterEmail-{{ section.id }}">Email address</label>
+          <div class="faf-footer__field">
+            <input
+              id="FafFooterEmail-{{ section.id }}"
+              class="faf-footer__input"
+              type="email"
+              name="contact[email]"
+              placeholder="Email address"
+              autocomplete="email"
+              autocapitalize="off"
+              spellcheck="false"
+              required
+              {% if form.errors %}aria-invalid="true" aria-describedby="FafFooterNewsletterStatus-{{ section.id }}"{% endif %}
+            >
+            <button class="faf-footer__submit" type="submit">Subscribe</button>
+          </div>
+          <p class="faf-footer__status" id="FafFooterNewsletterStatus-{{ section.id }}" role="status">
+            {%- if form.posted_successfully? -%}
+              Thank you. You are now part of the House.
+            {%- elsif form.errors -%}
+              {{ form.errors.translated_fields.email | capitalize }} {{ form.errors.messages.email }}
+            {%- endif -%}
+          </p>
+        {% endform %}
+      </div>
+    </div>
+
+    {% if section.blocks.size > 0 %}
+      <nav class="faf-footer__columns" aria-label="Footer">
+        {% for block in section.blocks %}
+          <div class="faf-footer__column" {{ block.shopify_attributes }}>
+            {% if block.settings.heading != blank %}
+              <h3 class="faf-footer__column-heading">{{ block.settings.heading | escape }}</h3>
+            {% endif %}
+            <ul class="faf-footer__links" role="list">
+              {% for i in (1..6) %}
+                {% liquid
+                  assign label_key = 'label_' | append: i
+                  assign url_key = 'url_' | append: i
+                  assign label = block.settings[label_key]
+                  assign url = block.settings[url_key]
+                %}
+                {% if label != blank %}
+                  <li>
+                    <a class="faf-footer__link" href="{{ url | default: '#' }}">{{ label | escape }}</a>
+                  </li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          </div>
+        {% endfor %}
+      </nav>
+    {% endif %}
+
+    {% if section.settings.wordmark != blank %}
+      <p class="faf-footer__wordmark" aria-hidden="true">{{ section.settings.wordmark | escape }}</p>
+    {% endif %}
+  </div>
+
+  <div class="faf-footer__bar">
+    <p class="faf-footer__copyright">
+      &copy; {{ 'now' | date: '%Y' }} {{ section.settings.copyright_name | escape }}. All rights reserved.
+    </p>
+    <p class="faf-footer__locale">
+      {{ localization.country.name }} ({{ localization.country.currency.iso_code }} {{ localization.country.currency.symbol }})
+    </p>
+    {% if section.settings.show_payment and shop.enabled_payment_types.size > 0 %}
+      <ul class="faf-footer__payments" role="list" aria-label="Payment methods">
+        {% for type in shop.enabled_payment_types %}
+          <li>{{ type | payment_type_svg_tag: class: 'faf-footer__payment' }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </div>
+</div>
+
+{% stylesheet %}
+  .faf-footer {
+    color: #fff;
+  }
+
+  .faf-footer__main {
+    background: #000;
+    padding: 56px 20px 28px;
+    overflow: hidden;
+    container-type: inline-size;
+  }
+
+  /* Top row: monogram and newsletter */
+  .faf-footer__top {
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+    padding-bottom: 44px;
+    border-bottom: 1px solid rgb(255 255 255 / 0.22);
+  }
+
+  .faf-footer__home {
+    color: inherit;
+    align-self: flex-start;
+  }
+
+  .faf-footer__mark {
+    display: block;
+    height: 56px;
+    aspect-ratio: 2528 / 2288;
+  }
+
+  .faf-footer__newsletter {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 440px;
+  }
+
+  .faf-footer__heading,
+  .faf-footer__column-heading {
+    margin: 0;
+    font-family: var(--font-body--family);
+    font-weight: 500;
+    font-size: 0.625rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: inherit;
+  }
+
+  .faf-footer__lead {
+    margin: 0;
+    font-family: var(--font-heading--family);
+    font-style: italic;
+    font-size: 1.125rem;
+    line-height: 1.4;
+  }
+
+  .faf-footer__form {
+    margin-top: 10px;
+  }
+
+  .faf-footer__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .faf-footer__field {
+    display: flex;
+    align-items: stretch;
+    border-bottom: 1px solid rgb(255 255 255 / 0.7);
+  }
+
+  /* Three classes so the theme's global input styles don't repaint the field */
+  .faf-footer .faf-footer__field .faf-footer__input {
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+    padding: 12px 0;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    color: #fff;
+    font-family: var(--font-body--family);
+    font-size: 0.8125rem;
+    letter-spacing: 0.04em;
+  }
+
+  .faf-footer__input::placeholder {
+    color: rgb(255 255 255 / 0.65);
+  }
+
+  .faf-footer__input:focus-visible {
+    outline: none;
+  }
+
+  .faf-footer__field:focus-within {
+    border-bottom-color: #fff;
+  }
+
+  .faf-footer__submit {
+    padding: 0 0 0 16px;
+    background: none;
+    border: 0;
+    color: #fff;
+    cursor: pointer;
+    font-family: var(--font-body--family);
+    font-weight: 500;
+    font-size: 0.625rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+  }
+
+  .faf-footer__submit:focus-visible {
+    outline: 1px solid #fff;
+    outline-offset: 4px;
+  }
+
+  .faf-footer__status {
+    margin: 10px 0 0;
+    min-height: 1em;
+    font-size: 0.75rem;
+  }
+
+  /* Link columns */
+  .faf-footer__columns {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 40px 24px;
+    padding: 44px 0 56px;
+  }
+
+  .faf-footer__column {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    min-width: 0;
+  }
+
+  .faf-footer__links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .faf-footer__link {
+    display: inline-block;
+    padding-block: 2px;
+    color: rgb(255 255 255 / 0.85);
+    text-decoration: none;
+    font-family: var(--font-body--family);
+    font-size: 0.75rem;
+    letter-spacing: 0.03em;
+    border-bottom: 1px solid transparent;
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .faf-footer__link:hover {
+    color: #fff;
+    border-bottom-color: #fff;
+  }
+
+  .faf-footer__link:focus-visible {
+    outline: 1px solid #fff;
+    outline-offset: 3px;
+  }
+
+  /* Large spaced wordmark */
+  .faf-footer__wordmark {
+    margin: 0;
+    font-family: var(--font-heading--family);
+    font-weight: var(--font-heading--weight);
+    font-size: 11.8cqw;
+    line-height: 1;
+    letter-spacing: 0.14em;
+    margin-right: -0.14em;
+    text-transform: uppercase;
+    text-align: center;
+    white-space: nowrap;
+    color: rgb(255 255 255 / 0.92);
+  }
+
+  /* Bottom bar */
+  .faf-footer__bar {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 20px 20px 28px;
+    background: #000;
+    color: rgb(255 255 255 / 0.7);
+    font-family: var(--font-body--family);
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+  }
+
+  .faf-footer__copyright,
+  .faf-footer__locale {
+    margin: 0;
+  }
+
+  .faf-footer__payments {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .faf-footer__payment {
+    display: block;
+    width: 34px;
+    height: auto;
+  }
+
+  @media screen and (min-width: 750px) {
+    .faf-footer__main {
+      padding: 80px 56px 36px;
+    }
+
+    .faf-footer__top {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding-bottom: 64px;
+    }
+
+    .faf-footer__mark {
+      height: 72px;
+    }
+
+    .faf-footer__newsletter {
+      flex: 0 1 420px;
+    }
+
+    .faf-footer__columns {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 32px;
+      padding: 64px 0 80px;
+    }
+
+    .faf-footer__bar {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      padding: 22px 56px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "FAF footer",
+  "tag": "div",
+  "class": "faf-section",
+  "max_blocks": 4,
+  "settings": [
+    { "type": "header", "content": "Newsletter" },
+    { "type": "text", "id": "newsletter_heading", "label": "Heading", "default": "Join the House" },
+    { "type": "text", "id": "newsletter_text", "label": "Line", "default": "Be the first to discover new collections and private events." },
+    { "type": "header", "content": "Brand" },
+    { "type": "text", "id": "wordmark", "label": "Large wordmark", "default": "House of FAF" },
+    { "type": "text", "id": "copyright_name", "label": "Copyright name", "default": "House of FAF" },
+    { "type": "checkbox", "id": "show_payment", "label": "Show payment icons", "default": true }
+  ],
+  "blocks": [
+    {
+      "type": "column",
+      "name": "Link column",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Heading" },
+        { "type": "text", "id": "label_1", "label": "Link 1 text" },
+        { "type": "url", "id": "url_1", "label": "Link 1" },
+        { "type": "text", "id": "label_2", "label": "Link 2 text" },
+        { "type": "url", "id": "url_2", "label": "Link 2" },
+        { "type": "text", "id": "label_3", "label": "Link 3 text" },
+        { "type": "url", "id": "url_3", "label": "Link 3" },
+        { "type": "text", "id": "label_4", "label": "Link 4 text" },
+        { "type": "url", "id": "url_4", "label": "Link 4" },
+        { "type": "text", "id": "label_5", "label": "Link 5 text" },
+        { "type": "url", "id": "url_5", "label": "Link 5" },
+        { "type": "text", "id": "label_6", "label": "Link 6 text" },
+        { "type": "url", "id": "url_6", "label": "Link 6" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAF footer",
+      "blocks": [
+        { "type": "column", "settings": { "heading": "Client services", "label_1": "Contact us", "label_2": "Shipping & delivery", "label_3": "Returns & exchanges", "label_4": "Size guide", "label_5": "FAQ" } },
+        { "type": "column", "settings": { "heading": "The House", "label_1": "Our story", "label_2": "Boutiques", "label_3": "Careers", "label_4": "Press" } },
+        { "type": "column", "settings": { "heading": "Legal", "label_1": "Terms of service", "label_2": "Privacy policy", "label_3": "Refund policy", "label_4": "Cookie settings" } },
+        { "type": "column", "settings": { "heading": "Follow us", "label_1": "Instagram", "label_2": "TikTok", "label_3": "Pinterest" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,299 @@
+/* House of FAF brand overrides. Keep small: settings first, CSS only for what settings cannot express. */
+:root {
+  --faf-red: #6E1423;
+  --faf-stone: #e6e6e6;
+  --letter-spacing--heading-loose: 0.08em;
+  --letter-spacing--body-loose: 0.01em;
+  --color-primary-button-hover-background: var(--faf-red);
+  --color-primary-button-hover-border: var(--faf-red);
+  --color-primary-button-hover-text: #fff;
+}
+
+/* Buttons and navigation: spaced capitals, as in the guideline */
+.button,
+.button-secondary,
+button.shopify-payment-button__button--unbranded {
+  letter-spacing: 0.14em;
+  font-size: 0.75rem;
+}
+
+.menu-list__link,
+.menu-drawer__menu-item {
+  letter-spacing: 0.14em;
+}
+
+/* Links turn red on hover; red is used nowhere else in body copy */
+.rte a:hover,
+.footer a:hover {
+  color: var(--faf-red);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  marquee-component * {
+    animation: none !important;
+  }
+}
+
+/* Built-in monogram logo (used until a logo image is uploaded in theme settings) */
+.faf-logo-mark {
+  display: block;
+  height: 38px;
+  aspect-ratio: 2528 / 2288;
+  color: inherit;
+}
+
+/* The monogram is painted through a mask so it takes the surrounding text colour */
+.faf-logo-mark,
+.faf-mark {
+  background-color: currentColor;
+  -webkit-mask: var(--faf-mark) center / contain no-repeat;
+  mask: var(--faf-mark) center / contain no-repeat;
+}
+
+@media screen and (min-width: 750px) {
+  .faf-logo-mark {
+    height: 48px;
+  }
+}
+
+/* Shared pieces for the House of FAF sections */
+.faf-eyebrow {
+  font-family: var(--font-accent--family);
+  font-weight: var(--font-accent--weight);
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.faf-tagline {
+  font-family: var(--font-heading--family);
+  font-style: italic;
+  font-size: clamp(1.2rem, 1rem + 0.9vw, 1.5rem);
+  line-height: 1.4;
+  letter-spacing: 0;
+  text-transform: none;
+  margin: 0;
+}
+
+.faf-link {
+  display: inline-block;
+  font-family: var(--font-accent--family);
+  font-weight: var(--font-accent--weight);
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: inherit;
+  padding-block: 6px;
+  border-bottom: 1px solid currentColor;
+  transition: color 0.2s ease;
+}
+
+.faf-link:hover {
+  color: var(--faf-red);
+}
+
+/* Tap area about 44px tall without moving the underline */
+.faf-link {
+  position: relative;
+}
+
+.faf-link::after {
+  content: '';
+  position: absolute;
+  inset: -6px -8px;
+}
+
+/* ==================================================================
+   Home page v2 (templates/index.v2.json, body.faf-v2).
+   The maison register from the reference review: warm off-white page,
+   tiny spaced type, quiet hero, edge-to-edge grey product tiles,
+   burgundy used only as a fine accent (italics, labels, one button).
+   Scoped to .faf-v2 so the current home page is untouched.
+   ================================================================== */
+.faf-v2 {
+  --faf-paper: #fffcf8;
+  background: var(--faf-paper);
+}
+
+/* Sections that paint plain white take the warm paper instead */
+.faf-v2 .faf-triptych,
+.faf-v2 .faf-editorial,
+.faf-v2 .faf-full-image,
+.faf-v2 .faf-classic--paper {
+  background: var(--faf-paper);
+}
+
+/* Burgundy labels and link underlines (v2 only) */
+.faf-v2 .faf-classic .faf-eyebrow {
+  color: var(--faf-red);
+}
+
+.faf-v2 .faf-link {
+  border-bottom-color: var(--faf-red);
+}
+
+/* ---------- Hero: one small italic line, a small burgundy button ---------- */
+.faf-v2 .faf-hero__heading {
+  font-family: var(--font-heading--family);
+  font-weight: var(--font-heading--weight);
+  font-style: italic;
+  font-size: clamp(1.75rem, 1.4rem + 1.2vw, 2.5rem);
+  letter-spacing: 0.01em;
+  text-transform: none;
+  margin-right: 0;
+}
+
+.faf-v2 .faf-hero__eyebrow {
+  font-size: 0.625rem;
+}
+
+.faf-v2 .faf-hero__rule {
+  display: none;
+}
+
+.faf-v2 .faf-hero__button {
+  min-height: 38px;
+  padding: 0 28px;
+  font-size: 0.625rem;
+}
+
+/* ---------- Intro statement: small, airy ---------- */
+.faf-v2 .faf-classic .faf-tagline {
+  font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
+}
+
+@media screen and (min-width: 750px) {
+  .faf-v2 .faf-classic {
+    padding-block: 120px;
+  }
+}
+
+/* ---------- Burgundy italic accent on the small pair (v2 only) ---------- */
+.faf-v2 .faf-editorial__text {
+  color: var(--faf-red);
+}
+
+/* ==================================================================
+   Site-wide refinements first tried in v2 (`body` prefix so these win
+   over each component's own single-class rules).
+   ================================================================== */
+
+/* Text sizes: tiny spaced navigation, labels and links */
+@media screen and (min-width: 750px) {
+  body .menu-list__link {
+    font-size: 0.6875rem;
+    letter-spacing: 0.2em;
+  }
+}
+
+body .faf-eyebrow {
+  font-size: 0.625rem;
+  letter-spacing: 0.3em;
+}
+
+body .faf-link {
+  font-size: 0.625rem;
+  letter-spacing: 0.24em;
+}
+
+/* Product row as a maison grid: centred tiny title, warm-grey tiles,
+   2px gutters, tiny captions, no badges */
+body .faf-product-row {
+  padding: 0 0 72px;
+}
+
+body .faf-product-row__header {
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 72px 16px 0;
+  margin-bottom: 36px;
+  text-align: center;
+}
+
+body .faf-product-row__heading {
+  font-family: var(--font-body--family);
+  font-weight: var(--font-body--weight);
+  font-size: 0.99rem;
+  letter-spacing: 0.32em;
+}
+
+body .faf-product-row .faf-link {
+  font-size: 0.75rem;
+}
+
+body .faf-product-row__grid {
+  gap: 24px 2px;
+}
+
+body .faf-card__media {
+  background: #f2f1ef;
+}
+
+body .faf-card__badge {
+  display: none;
+}
+
+body .faf-card__title,
+body .faf-card__price {
+  padding-inline: 12px;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+}
+
+body .faf-card__title {
+  font-family: var(--font-body--family);
+  font-weight: 500;
+}
+
+body .faf-card__price {
+  color: #4a0a16;
+}
+
+@media screen and (min-width: 750px) {
+  body .faf-product-row {
+    padding: 0 0 112px;
+  }
+
+  body .faf-product-row__header {
+    padding-top: 120px;
+    margin-bottom: 48px;
+  }
+
+  body .faf-product-row__grid {
+    gap: 32px 2px;
+  }
+}
+
+/* The Collection: burgundy label, burgundy italic captions, burgundy underline */
+/* Darker burgundy and a touch more weight for text on white: the brand red in a thin italic
+   at this size washes out on laptop screens. Sizes stay as they were. */
+body .faf-triptych .faf-eyebrow,
+body .faf-triptych__caption,
+body .faf-triptych .faf-link {
+  color: #4a0a16;
+}
+
+body .faf-triptych__caption {
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+body .faf-triptych .faf-eyebrow {
+  font-size: 0.9rem;
+}
+
+/* Phones: three photos across, so the captions need to fit a third of the width */
+@media screen and (max-width: 749px) {
+  body .faf-triptych__caption {
+    margin-top: 10px;
+    font-size: 0.8rem;
+    line-height: 1.25;
+  }
+}
+
+body .faf-triptych .faf-link {
+  border-bottom-color: var(--faf-red);
+}

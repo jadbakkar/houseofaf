@@ -1,0 +1,89 @@
+{
+  "sections": {
+    "v2_hero": {
+      "type": "faf-hero",
+      "settings": {
+        "eyebrow": "Just in",
+        "heading": "New Arrivals",
+        "text": "",
+        "label": "Discover",
+        "link": "shopify://collections/all",
+        "text_position": "center",
+        "demo_image": "faf-demo-hero-sofa.jpg",
+        "focus": "24% center",
+        "motion": "subtle"
+      }
+    },
+    "v2_intro": {
+      "type": "faf-statement-classic",
+      "settings": {
+        "tone": "paper",
+        "show_monogram": false,
+        "eyebrow": "House of FAF",
+        "text": "A contemporary fashion label rooted in elegance, sophistication, and timeless design.",
+        "label": ""
+      }
+    },
+    "v2_new": {
+      "type": "faf-product-row",
+      "settings": {
+        "heading": "New Arrivals",
+        "collection": "bestsellers",
+        "limit": 4,
+        "link_label": "View all"
+      }
+    },
+    "v2_full_image": {
+      "type": "faf-full-image",
+      "settings": {
+        "demo_image": "faf-guide-halter-wide.jpg",
+        "demo_width": 1672,
+        "demo_height": 941
+      }
+    },
+    "v2_collection": {
+      "type": "faf-triptych",
+      "settings": {
+        "eyebrow": "The Collection",
+        "demo_image_1": "faf-guide-lace-scarf.jpg",
+        "caption_1": "Ready-to-wear",
+        "demo_image_2": "faf-guide-lace-dress.jpg",
+        "caption_2": "Timeless pieces",
+        "demo_image_3": "faf-guide-black-suit.jpg",
+        "caption_3": "Modern feminine",
+        "label": "Discover the collection",
+        "link": "shopify://collections/all"
+      }
+    },
+    "v2_movement": {
+      "type": "faf-editorial",
+      "settings": {
+        "layout": "inset",
+        "text": "A fashion house founded by Farah, where timeless style meets modern elegance.",
+        "demo_image_1": "faf-guide-lace-legs.jpg",
+        "demo_image_2": "faf-guide-blur.jpg"
+      }
+    },
+    "v2_statement": {
+      "type": "faf-statement-classic",
+      "settings": {
+        "tone": "stone",
+        "show_monogram": true,
+        "text": "More than fashion, FAF is a personal expression of confidence, style, and identity.",
+        "label": "The House",
+        "link": "shopify://pages/contact",
+        "demo_image": "faf-guide-lace-veil.jpg",
+        "image_side": "left"
+      }
+    }
+  },
+  "order": [
+    "v2_hero",
+    "v2_intro",
+    "v2_new",
+    "v2_full_image",
+    "v2_collection",
+    "v2_movement",
+    "v2_statement"
+  ]
+}

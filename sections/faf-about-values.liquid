@@ -1,0 +1,166 @@
+{% comment %}
+  House of FAF: values. Three cards in the guideline's card language: red with a thin white inner frame, white, black.
+{% endcomment %}
+
+<div class="faf-values" style="--faf-mark: url('{{ 'faf-monogram.svg' | asset_url }}');">
+  <div class="faf-values__grid">
+    <div class="faf-values__card faf-values__card--red">
+      <span class="faf-values__watermark faf-mark" aria-hidden="true"></span>
+      <div class="faf-values__body">
+        <h2 class="faf-values__title">{{ section.settings.title_1 }}</h2>
+        <span class="faf-values__rule" aria-hidden="true"></span>
+        <p class="faf-values__line">{{ section.settings.line_1 }}</p>
+      </div>
+    </div>
+    <div class="faf-values__card faf-values__card--white">
+      <span class="faf-values__watermark faf-mark" aria-hidden="true"></span>
+      <div class="faf-values__body">
+        <h2 class="faf-values__title">{{ section.settings.title_2 }}</h2>
+        <span class="faf-values__rule" aria-hidden="true"></span>
+        <p class="faf-values__line">{{ section.settings.line_2 }}</p>
+      </div>
+    </div>
+    <div class="faf-values__card faf-values__card--black">
+      <span class="faf-values__watermark faf-mark" aria-hidden="true"></span>
+      <div class="faf-values__body">
+        <h2 class="faf-values__title">{{ section.settings.title_3 }}</h2>
+        <span class="faf-values__rule" aria-hidden="true"></span>
+        <p class="faf-values__line">{{ section.settings.line_3 }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .faf-values {
+    padding: 16px;
+    background: #f5f5f5;
+  }
+
+  .faf-values__grid {
+    max-width: 1320px;
+    margin-inline: auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .faf-values__card {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 320px;
+    padding: 28px;
+    text-align: center;
+  }
+
+  .faf-values__card--red {
+    background: var(--faf-red);
+    color: #fff;
+  }
+
+  .faf-values__card--red::before {
+    content: '';
+    position: absolute;
+    inset: 12px;
+    border: 1px solid #fff;
+    pointer-events: none;
+  }
+
+  .faf-values__card--white {
+    background: #fff;
+    color: #000;
+    border: 1px solid var(--faf-stone);
+  }
+
+  .faf-values__card--white .faf-values__watermark {
+    color: var(--faf-red);
+    opacity: 0.1;
+  }
+
+  .faf-values__card--black {
+    background: #000;
+    color: #fff;
+  }
+
+  .faf-values__watermark {
+    position: absolute;
+    right: -70px;
+    bottom: -60px;
+    width: 220px;
+    aspect-ratio: 2528 / 2288;
+    opacity: 0.12;
+    pointer-events: none;
+  }
+
+  .faf-values__body {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    max-width: 300px;
+  }
+
+  .faf-values__title {
+    margin: 0;
+    font-family: var(--font-heading--family);
+    font-weight: var(--font-heading--weight);
+    font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+    line-height: 1.15;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .faf-values__rule {
+    display: block;
+    width: 40px;
+    height: 1px;
+    background: currentColor;
+  }
+
+  .faf-values__line {
+    margin: 0;
+    font-family: var(--font-heading--family);
+    font-style: italic;
+    font-size: clamp(1.1rem, 1rem + 0.5vw, 1.35rem);
+    line-height: 1.4;
+  }
+
+  @media screen and (min-width: 750px) {
+    .faf-values {
+      padding: 24px;
+    }
+
+    .faf-values__grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .faf-values__card {
+      min-height: 420px;
+      padding: 40px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "FAF about values",
+  "class": "faf-section",
+  "settings": [
+    { "type": "header", "content": "Red card" },
+    { "type": "text", "id": "title_1", "label": "Title", "default": "Ready-to-wear" },
+    { "type": "text", "id": "line_1", "label": "Italic line", "default": "Pieces made to be worn, season after season." },
+    { "type": "header", "content": "White card" },
+    { "type": "text", "id": "title_2", "label": "Title", "default": "Timeless pieces" },
+    { "type": "text", "id": "line_2", "label": "Italic line", "default": "Clean lines and considered detail over passing trends." },
+    { "type": "header", "content": "Black card" },
+    { "type": "text", "id": "title_3", "label": "Title", "default": "Modern feminine" },
+    { "type": "text", "id": "line_3", "label": "Italic line", "default": "Confidence, style, and identity, expressed quietly." }
+  ],
+  "presets": [{ "name": "FAF about values" }]
+}
+{% endschema %}

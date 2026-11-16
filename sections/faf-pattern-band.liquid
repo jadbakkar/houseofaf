@@ -1,0 +1,171 @@
+{% comment %}
+  House of FAF: monogram pattern band.
+  The pattern is the correct two-F monogram, tiled on Stone, every second row offset.
+  It is painted through a mask in the accent colour (--faf-red), so it follows the brand token.
+  Optional: a label on a white card in the middle. Without a label the band is decorative only.
+{% endcomment %}
+
+{% liquid
+  assign label = section.settings.label
+  assign sublabel = section.settings.sublabel
+  assign has_card = false
+  if label != blank or sublabel != blank
+    assign has_card = true
+  endif
+%}
+
+<div
+  class="faf-pattern-band{% if has_card %} faf-pattern-band--card{% endif %}"
+  {% unless has_card %}
+    aria-hidden="true"
+  {% endunless %}
+  style="--faf-pattern-height: {{ section.settings.height }}px; --faf-pattern-height-mobile: {{ section.settings.height_mobile }}px; --faf-pattern-tile: url('{{ 'faf-pattern.svg' | asset_url }}');"
+>
+  {% if has_card %}
+    <div class="faf-pattern-band__card">
+      {% if label != blank %}
+        <p class="faf-pattern-band__label">
+          <span>{{ label | escape }}</span>
+        </p>
+      {% endif %}
+      {% if sublabel != blank %}
+        <p class="faf-pattern-band__sublabel">{{ sublabel | escape }}</p>
+      {% endif %}
+    </div>
+  {% endif %}
+</div>
+
+{% stylesheet %}
+  .faf-pattern-band {
+    --faf-pattern-size: 308px;
+
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: var(--faf-pattern-height-mobile);
+    background-color: var(--faf-stone);
+  }
+
+  /* With a card: a smaller tile, shifted so one monogram sits exactly behind the card
+     and its neighbours frame the card symmetrically */
+  .faf-pattern-band.faf-pattern-band--card {
+    --faf-pattern-size: 220px;
+  }
+
+  @supports (mask-image: none) or (-webkit-mask-image: none) {
+    .faf-pattern-band::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-color: var(--faf-red);
+      -webkit-mask: var(--faf-pattern-tile) center top / var(--faf-pattern-size) auto repeat;
+      mask: var(--faf-pattern-tile) center top / var(--faf-pattern-size) auto repeat;
+    }
+
+    /* In the tile (440 x 400 units) the first monogram is centred at 110, 100 */
+    .faf-pattern-band.faf-pattern-band--card::before {
+      -webkit-mask-position: calc(50% + var(--faf-pattern-size) / 4) calc(50% + var(--faf-pattern-size) * 0.2273);
+      mask-position: calc(50% + var(--faf-pattern-size) / 4) calc(50% + var(--faf-pattern-size) * 0.2273);
+    }
+  }
+
+  /* Keep the decorative pattern in Windows High Contrast, as the old background image did */
+  @media (forced-colors: active) {
+    .faf-pattern-band::before {
+      forced-color-adjust: none;
+    }
+  }
+
+  /* Label card: white, with a fine accent line drawn inside the edge, as on the guideline cards */
+  .faf-pattern-band__card {
+    position: relative;
+    z-index: 1;
+    max-width: calc(100% - 32px);
+    padding: 20px 28px 18px;
+    background: #fff;
+    box-shadow: inset 0 0 0 5px #fff, inset 0 0 0 6px var(--faf-red);
+    text-align: center;
+  }
+
+  .faf-pattern-band__label {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    font-family: var(--font-heading--family);
+    font-weight: var(--font-heading--weight);
+    font-size: clamp(1.125rem, 1rem + 0.5vw, 1.5rem);
+    line-height: 1.15;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--faf-red);
+  }
+
+  /* Cancel the trailing letter-space so the text sits centred between the two rules */
+  .faf-pattern-band__label span {
+    min-width: 0;
+    margin-right: -0.22em;
+  }
+
+  .faf-pattern-band__label::before,
+  .faf-pattern-band__label::after {
+    content: '';
+    flex: 0 0 24px;
+    height: 1px;
+    background: currentColor;
+  }
+
+  .faf-pattern-band__sublabel {
+    margin: 8px 0 0;
+    font-family: var(--font-accent--family);
+    font-weight: var(--font-accent--weight);
+    font-size: 0.6875rem;
+    line-height: 1.4;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: #000;
+  }
+
+  @media screen and (min-width: 750px) {
+    .faf-pattern-band {
+      --faf-pattern-size: 440px;
+
+      min-height: var(--faf-pattern-height);
+    }
+
+    .faf-pattern-band.faf-pattern-band--card {
+      --faf-pattern-size: 360px;
+    }
+
+    /* Tall enough to hide the monogram centred behind it */
+    .faf-pattern-band__card {
+      padding: 34px 48px 32px;
+    }
+
+    .faf-pattern-band__label::before,
+    .faf-pattern-band__label::after {
+      flex-basis: 36px;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .faf-pattern-band.faf-pattern-band--card {
+      --faf-pattern-size: 440px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "FAF pattern band",
+  "class": "faf-section",
+  "settings": [
+    { "type": "range", "id": "height", "label": "Height on desktop", "min": 100, "max": 480, "step": 20, "unit": "px", "default": 400 },
+    { "type": "range", "id": "height_mobile", "label": "Height on mobile", "min": 60, "max": 320, "step": 20, "unit": "px", "default": 280 },
+    { "type": "text", "id": "label", "label": "Label", "info": "Optional. Shown on a white card in the middle of the band, for example: House of FAF" },
+    { "type": "text", "id": "sublabel", "label": "Small line under the label" }
+  ],
+  "presets": [{ "name": "FAF pattern band" }]
+}
+{% endschema %}

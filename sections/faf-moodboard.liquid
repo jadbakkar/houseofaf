@@ -1,0 +1,332 @@
+{% comment %}
+  House of FAF: mood grid. A 3 x 3 grid that mirrors the guideline's social grid:
+  red brand cards, photo tiles with lettering, and white text cards.
+  Photos come from the image pickers, or from demo assets until they are set.
+{% endcomment %}
+
+{% liquid
+  assign mark = 'faf-monogram.svg' | asset_url
+  assign fallbacks = 'faf-guide-lace-scarf.jpg|faf-guide-lace-dress.jpg|faf-guide-black-suit.jpg|faf-guide-lace-legs.jpg|faf-guide-blur.jpg|faf-guide-lace-veil.jpg' | split: '|'
+  assign shop_url = section.settings.link | default: routes.all_products_collection_url
+%}
+
+{% capture photo_1 %}{% render 'faf-photo', image: section.settings.image_1, fallback: fallbacks[0] %}{% endcapture %}
+{% capture photo_2 %}{% render 'faf-photo', image: section.settings.image_2, fallback: fallbacks[1] %}{% endcapture %}
+{% capture photo_3 %}{% render 'faf-photo', image: section.settings.image_3, fallback: fallbacks[2] %}{% endcapture %}
+{% capture photo_4 %}{% render 'faf-photo', image: section.settings.image_4, fallback: fallbacks[3] %}{% endcapture %}
+{% capture photo_5 %}{% render 'faf-photo', image: section.settings.image_5, fallback: fallbacks[4] %}{% endcapture %}
+{% capture photo_6 %}{% render 'faf-photo', image: section.settings.image_6, fallback: fallbacks[5] %}{% endcapture %}
+
+<div class="faf-mood" style="--faf-mark: url('{{ mark }}');">
+  <div class="faf-mood__grid">
+    <div class="faf-mood__tile faf-mood__tile--red">
+      <span class="faf-mood__mark faf-mark" aria-hidden="true"></span>
+      <p class="faf-mood__wordmark">FAF</p>
+      <span class="faf-mood__rule" aria-hidden="true"></span>
+      <p class="faf-mood__italic">{{ section.settings.text_1 }}</p>
+    </div>
+
+    <div class="faf-mood__tile faf-mood__tile--photo">
+      {{ photo_1 }}
+      <p class="faf-mood__signature">With love,<br><span>FAF.</span></p>
+    </div>
+
+    <div class="faf-mood__tile faf-mood__tile--card">
+      <div class="faf-mood__inset">{{ photo_2 }}</div>
+      <p class="faf-mood__wordmark faf-mood__wordmark--red">FAF</p>
+      <span class="faf-mood__rule faf-mood__rule--red" aria-hidden="true"></span>
+      <p class="faf-mood__italic faf-mood__italic--small">Ready-to-wear &nbsp;&middot;&nbsp; Timeless Pieces &nbsp;&middot;&nbsp; Modern Feminine</p>
+    </div>
+
+    <a class="faf-mood__tile faf-mood__tile--photo faf-mood__tile--link" href="{{ shop_url }}">
+      {{ photo_3 }}
+      <span class="faf-mood__vertical">The Collection</span>
+      <span class="faf-mood__arrow" aria-hidden="true">&#10230;</span>
+    </a>
+
+    <div class="faf-mood__tile faf-mood__tile--card faf-mood__tile--center">
+      <span class="faf-mood__mark faf-mood__mark--red faf-mark" aria-hidden="true"></span>
+      <p class="faf-mood__italic faf-mood__italic--dark">{{ section.settings.text_2 }}</p>
+    </div>
+
+    <div class="faf-mood__tile faf-mood__tile--photo">{{ photo_4 }}</div>
+
+    <div class="faf-mood__tile faf-mood__tile--photo">{{ photo_5 }}</div>
+
+    <div class="faf-mood__tile faf-mood__tile--photo">
+      {{ photo_6 }}
+      <span class="faf-mood__stamp faf-mark" aria-hidden="true"></span>
+    </div>
+
+    <div class="faf-mood__tile faf-mood__tile--red faf-mood__tile--framed">
+      <p class="faf-mood__title">House of FAF</p>
+      <span class="faf-mood__rule" aria-hidden="true"></span>
+      <p class="faf-mood__italic">{{ section.settings.text_3 }}</p>
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .faf-mood {
+    padding: 8px 16px 64px;
+  }
+
+  .faf-mood__grid {
+    max-width: 1180px;
+    margin-inline: auto;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .faf-mood__tile {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 18px;
+    text-align: center;
+    text-decoration: none;
+    container-type: inline-size;
+  }
+
+  .faf-mood__tile:last-child {
+    grid-column: 1 / -1;
+    aspect-ratio: 8 / 5;
+  }
+
+  .faf-mood__tile--red {
+    background: var(--faf-red);
+    color: #fff;
+  }
+
+  .faf-mood__tile--framed::before {
+    content: '';
+    position: absolute;
+    inset: 12px;
+    border: 1px solid rgb(255 255 255 / 0.85);
+    pointer-events: none;
+  }
+
+  .faf-mood__tile--card {
+    background: #fff;
+    color: #000;
+  }
+
+  .faf-mood__tile--photo {
+    background: var(--faf-stone);
+    color: #fff;
+    padding: 0;
+  }
+
+  .faf-mood__photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    transition: transform 1.2s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  .faf-mood__inset {
+    position: relative;
+    width: 62%;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    margin-bottom: 4px;
+  }
+
+  .faf-mood__mark {
+    display: block;
+    width: 44%;
+    aspect-ratio: 2528 / 2288;
+  }
+
+  .faf-mood__mark--red {
+    width: 26%;
+    color: var(--faf-red);
+  }
+
+  .faf-mood__stamp {
+    position: absolute;
+    left: 50%;
+    top: 34%;
+    width: 30%;
+    aspect-ratio: 2528 / 2288;
+    transform: translate(-50%, -50%);
+    color: var(--faf-red);
+  }
+
+  .faf-mood__wordmark,
+  .faf-mood__title {
+    margin: 0;
+    font-family: var(--font-heading--family);
+    font-weight: var(--font-heading--weight);
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  .faf-mood__wordmark {
+    font-size: clamp(1rem, 7cqi, 1.75rem);
+    letter-spacing: 0.34em;
+    margin-right: -0.34em;
+  }
+
+  .faf-mood__wordmark--red {
+    color: var(--faf-red);
+  }
+
+  .faf-mood__title {
+    font-size: clamp(1rem, 6.4cqi, 1.75rem);
+    letter-spacing: 0.16em;
+  }
+
+  .faf-mood__rule {
+    width: 28px;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.8;
+  }
+
+  .faf-mood__rule--red {
+    background: var(--faf-red);
+  }
+
+  .faf-mood__italic {
+    margin: 0;
+    max-width: 22em;
+    font-family: var(--font-heading--family);
+    font-style: italic;
+    font-size: clamp(0.75rem, 4.4cqi, 1.125rem);
+    line-height: 1.4;
+    text-wrap: balance;
+  }
+
+  .faf-mood__italic--small {
+    font-size: clamp(0.625rem, 3.2cqi, 0.875rem);
+  }
+
+  .faf-mood__italic--dark {
+    color: #000;
+    font-size: clamp(0.8125rem, 5cqi, 1.3125rem);
+  }
+
+  .faf-mood__signature {
+    position: absolute;
+    left: 9%;
+    bottom: 8%;
+    margin: 0;
+    text-align: left;
+    font-family: var(--font-heading--family);
+    font-style: italic;
+    font-size: clamp(1rem, 7cqi, 1.75rem);
+    line-height: 1.25;
+    text-shadow: 0 1px 14px rgb(0 0 0 / 0.45);
+  }
+
+  .faf-mood__signature span {
+    font-size: 1.25em;
+    letter-spacing: 0.06em;
+  }
+
+  .faf-mood__vertical {
+    position: absolute;
+    left: 7%;
+    bottom: 8%;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-family: var(--font-heading--family);
+    font-size: clamp(0.875rem, 6cqi, 1.5rem);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #fff;
+    text-shadow: 0 1px 14px rgb(0 0 0 / 0.45);
+    line-height: 1;
+  }
+
+  .faf-mood__arrow {
+    position: absolute;
+    right: 8%;
+    bottom: 6%;
+    font-size: clamp(1.25rem, 8cqi, 2rem);
+    line-height: 1;
+    color: #fff;
+    transition: transform 0.3s ease;
+  }
+
+  @media (hover: hover) {
+    .faf-mood__tile--link:hover .faf-mood__arrow {
+      transform: translateX(6px);
+    }
+  }
+
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .faf-mood__tile--link:hover .faf-mood__photo {
+      transform: scale(1.04);
+    }
+  }
+
+  @media screen and (min-width: 750px) {
+    .faf-mood {
+      padding: 16px 40px 112px;
+    }
+
+    .faf-mood__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .faf-mood__tile {
+      padding: 32px;
+      gap: 16px;
+    }
+
+    .faf-mood__tile:last-child {
+      grid-column: auto;
+      aspect-ratio: 4 / 5;
+    }
+
+    .faf-mood__tile--framed::before {
+      inset: 16px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "FAF mood grid",
+  "class": "faf-section",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "text_1",
+      "label": "Red card text",
+      "default": "A fashion house founded by Farah, where timeless style meets modern elegance."
+    },
+    {
+      "type": "textarea",
+      "id": "text_2",
+      "label": "White card text",
+      "default": "More than fashion, FAF is a personal expression of confidence, style, and identity."
+    },
+    {
+      "type": "textarea",
+      "id": "text_3",
+      "label": "Framed red card text",
+      "default": "A contemporary fashion label rooted in elegance, sophistication, and timeless design."
+    },
+    { "type": "url", "id": "link", "label": "\"The Collection\" tile link" },
+    { "type": "header", "content": "Photos" },
+    { "type": "image_picker", "id": "image_1", "label": "With love tile" },
+    { "type": "image_picker", "id": "image_2", "label": "White card photo" },
+    { "type": "image_picker", "id": "image_3", "label": "The Collection tile" },
+    { "type": "image_picker", "id": "image_4", "label": "Photo tile 1" },
+    { "type": "image_picker", "id": "image_5", "label": "Photo tile 2" },
+    { "type": "image_picker", "id": "image_6", "label": "Monogram photo tile" }
+  ],
+  "presets": [{ "name": "FAF mood grid" }]
+}
+{% endschema %}

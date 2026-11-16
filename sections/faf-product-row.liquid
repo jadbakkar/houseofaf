@@ -1,0 +1,279 @@
+{% comment %}
+  House of FAF: product row (used for Bestsellers on the home page).
+  Shows products from the chosen collection. While that collection is empty, it shows
+  demo cards built from theme assets, so the page never falls back to placeholder art.
+{% endcomment %}
+
+{% liquid
+  assign collection = section.settings.collection
+  assign limit = section.settings.limit
+  assign use_demo = true
+  if collection != blank and collection.products_count > 0
+    assign use_demo = false
+  endif
+  assign view_all_url = collection.url | default: routes.all_products_collection_url
+
+  assign demo_handles = 'farah-tweed-jacket|yara-blazer-set|layal-lace-blouse|dalia-wide-leg-trouser|maya-slip-dress|noor-halter-top|rima-tailored-trouser|lina-pinafore-dress' | split: '|'
+  assign demo_titles = 'Farah Tweed Jacket|Yara Blazer Set|Layal Lace Blouse|Dalia Wide-Leg Trouser|Maya Slip Dress|Noor Halter Top|Rima Tailored Trouser|Lina Pinafore Dress' | split: '|'
+  assign demo_prices = '$245|$320|$130|$160|$210|$95|$150|$230' | split: '|'
+  assign demo_compare = '|$380||||||' | split: '|'
+  assign demo_badges = 'New|Sale||||New|New|Sold out' | split: '|'
+%}
+
+<div class="faf-product-row">
+  <div class="faf-product-row__header">
+    {% if section.settings.heading != blank %}
+      <h2 class="faf-product-row__heading">{{ section.settings.heading }}</h2>
+    {% endif %}
+    {% if section.settings.link_label != blank %}
+      <a class="faf-link" href="{{ view_all_url }}">{{ section.settings.link_label }}</a>
+    {% endif %}
+  </div>
+
+  <ul class="faf-product-row__grid" role="list">
+    {% if use_demo %}
+      {% assign demo_order = section.settings.demo_order | default: '0,1,2,3,4,5,6,7' | split: ',' %}
+      {% for idx in demo_order limit: limit %}
+        {% liquid
+          assign i = idx | strip | plus: 0
+          assign handle = demo_handles[i]
+          assign img_1 = 'faf-demo-' | append: handle | append: '-1.jpg'
+          assign img_2 = 'faf-demo-' | append: handle | append: '-2.jpg'
+          assign badge = demo_badges[i]
+          assign compare = demo_compare[i]
+        %}
+        <li class="faf-card">
+          <a class="faf-card__link" href="{{ routes.all_products_collection_url }}">
+            <span class="faf-card__media">
+              <img class="faf-card__image" src="{{ img_1 | asset_url }}" alt="{{ demo_titles[i] }}" loading="lazy" width="900" height="1200">
+              <img class="faf-card__image faf-card__image--hover" src="{{ img_2 | asset_url }}" alt="" loading="lazy" width="900" height="1200">
+              {% if badge != blank %}
+                <span class="faf-card__badge{% if badge == 'Sale' %} faf-card__badge--sale{% elsif badge == 'Sold out' %} faf-card__badge--soldout{% endif %}">
+                  {{- badge -}}
+                </span>
+              {% endif %}
+            </span>
+            <span class="faf-card__title">{{ demo_titles[i] }}</span>
+            <span class="faf-card__price">
+              {% if compare != blank %}
+                <span class="faf-card__price--sale">{{ demo_prices[i] }}</span>
+                <s class="faf-card__price--compare">{{ compare }}</s>
+              {% else %}
+                {{ demo_prices[i] }}
+              {% endif %}
+            </span>
+          </a>
+        </li>
+      {% endfor %}
+    {% else %}
+      {% for product in collection.products limit: limit %}
+        {% liquid
+          assign first = product.featured_media
+          assign second = product.media[1]
+          assign first_alt = first.alt | default: product.title
+          assign on_sale = false
+          if product.compare_at_price > product.price
+            assign on_sale = true
+          endif
+        %}
+        <li class="faf-card">
+          <a class="faf-card__link" href="{{ product.url }}">
+            <span class="faf-card__media">
+              {% if first != blank %}
+                {{
+                  first
+                  | image_url: width: 1200
+                  | image_tag:
+                    widths: '300, 450, 600, 900, 1200',
+                    sizes: '(min-width: 750px) 25vw, 50vw',
+                    class: 'faf-card__image',
+                    loading: 'lazy',
+                    alt: first_alt
+                }}
+              {% endif %}
+              {% if second != blank and second.media_type == 'image' %}
+                {{
+                  second
+                  | image_url: width: 1200
+                  | image_tag:
+                    widths: '300, 450, 600, 900, 1200',
+                    sizes: '(min-width: 750px) 25vw, 50vw',
+                    class: 'faf-card__image faf-card__image--hover',
+                    loading: 'lazy',
+                    alt: ''
+                }}
+              {% endif %}
+              {% if product.available == false %}
+                <span class="faf-card__badge faf-card__badge--soldout">Sold out</span>
+              {% elsif on_sale %}
+                <span class="faf-card__badge faf-card__badge--sale">Sale</span>
+              {% elsif product.tags contains 'new' %}
+                <span class="faf-card__badge">New</span>
+              {% endif %}
+            </span>
+            <span class="faf-card__title">{{ product.title }}</span>
+            <span class="faf-card__price">
+              {% if on_sale %}
+                <span class="faf-card__price--sale">{{ product.price | money }}</span>
+                <s class="faf-card__price--compare">{{ product.compare_at_price | money }}</s>
+              {% else %}
+                {{ product.price | money }}
+              {% endif %}
+            </span>
+          </a>
+        </li>
+      {% endfor %}
+    {% endif %}
+  </ul>
+</div>
+
+{% stylesheet %}
+  .faf-product-row {
+    padding: 56px 16px 64px;
+    background: transparent;
+    color: #000;
+  }
+
+  .faf-product-row__header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .faf-product-row__heading {
+    margin: 0;
+    font-family: var(--font-heading--family);
+    font-weight: var(--font-heading--weight);
+    font-size: clamp(1.625rem, 1.3rem + 1.1vw, 2rem);
+    line-height: 1.15;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .faf-product-row__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px 8px;
+  }
+
+  .faf-card__link {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .faf-card__media {
+    position: relative;
+    display: block;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    background: var(--faf-stone);
+    margin-bottom: 8px;
+  }
+
+  .faf-card__image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+  }
+
+  .faf-card__image--hover {
+    opacity: 0;
+    transition: opacity 0.45s ease;
+  }
+
+  @media (hover: hover) {
+    .faf-card__link:hover .faf-card__image--hover {
+      opacity: 1;
+    }
+  }
+
+  .faf-card__badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 5px 9px;
+    background: #fff;
+    color: #000;
+    font-family: var(--font-accent--family);
+    font-weight: var(--font-accent--weight);
+    font-size: 0.625rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  .faf-card__badge--sale {
+    background: var(--faf-red);
+    color: #fff;
+  }
+
+  .faf-card__badge--soldout {
+    background: var(--faf-stone);
+  }
+
+  .faf-card__title {
+    font-family: var(--font-subheading--family);
+    font-weight: var(--font-subheading--weight);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1.3;
+  }
+
+  .faf-card__price {
+    display: flex;
+    gap: 8px;
+    font-size: 0.8125rem;
+    letter-spacing: 0.04em;
+    line-height: 1;
+  }
+
+  .faf-card__price--sale {
+    color: var(--faf-red);
+  }
+
+  .faf-card__price--compare {
+    opacity: 0.6;
+  }
+
+  @media screen and (min-width: 750px) {
+    .faf-product-row {
+      padding: 80px 40px 96px;
+    }
+
+    .faf-product-row__header {
+      margin-bottom: 36px;
+    }
+
+    .faf-product-row__grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 40px 8px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "FAF product row",
+  "class": "faf-section",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Bestsellers" },
+    { "type": "collection", "id": "collection", "label": "Collection", "info": "While this collection is empty, demo products are shown." },
+    { "type": "range", "id": "limit", "label": "Products to show", "min": 2, "max": 8, "step": 2, "default": 4 },
+    { "type": "text", "id": "demo_order", "label": "Demo products order", "info": "Only used while the collection is empty. Numbers 0 to 7, separated by commas.", "default": "0,1,2,3,4,5,6,7" },
+    { "type": "text", "id": "link_label", "label": "Link text", "default": "View all" }
+  ],
+  "presets": [{ "name": "FAF product row" }]
+}
+{% endschema %}

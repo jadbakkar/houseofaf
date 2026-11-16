@@ -1,0 +1,30 @@
+{
+  "sections": {
+    "header": {
+      "type": "faf-page-header",
+      "settings": {
+        "eyebrow": "House of FAF",
+        "title": "Size Guide",
+        "line": "Measurements are in centimetres."
+      }
+    },
+    "table": {
+      "type": "faf-size-table",
+      "blocks": {
+        "xs": { "type": "row", "settings": { "size": "XS", "bust": "80", "waist": "62", "hips": "88" } },
+        "s": { "type": "row", "settings": { "size": "S", "bust": "84", "waist": "66", "hips": "92" } },
+        "m": { "type": "row", "settings": { "size": "M", "bust": "88", "waist": "70", "hips": "96" } },
+        "l": { "type": "row", "settings": { "size": "L", "bust": "94", "waist": "76", "hips": "102" } }
+      },
+      "block_order": ["xs", "s", "m", "l"],
+      "settings": {
+        "caption": "Size guide, measurements in centimetres",
+        "note": "Demo measurements. To be replaced with the final size chart."
+      }
+    }
+  },
+  "order": [
+    "header",
+    "table"
+  ]
+}

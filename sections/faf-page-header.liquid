@@ -1,0 +1,63 @@
+{% comment %}
+  House of FAF: page header. Red eyebrow, serif capital H1, short rule, italic line.
+{% endcomment %}
+
+<div class="faf-page-header">
+  {% if section.settings.eyebrow != blank %}
+    <p class="faf-eyebrow">{{ section.settings.eyebrow }}</p>
+  {% endif %}
+  <h1 class="faf-page-header__title">{{ section.settings.title | default: page.title }}</h1>
+  <span class="faf-page-header__rule" aria-hidden="true"></span>
+  {% if section.settings.line != blank %}
+    <p class="faf-tagline">{{ section.settings.line }}</p>
+  {% endif %}
+</div>
+
+{% stylesheet %}
+  .faf-page-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 56px 20px 24px;
+    background: #f5f5f5;
+    color: var(--faf-red);
+    text-align: center;
+  }
+
+  .faf-page-header__title {
+    margin: 0;
+    font-family: var(--font-heading--family);
+    font-weight: var(--font-heading--weight);
+    font-size: clamp(2rem, 1.5rem + 2vw, 3.25rem);
+    line-height: 1.1;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .faf-page-header__rule {
+    display: block;
+    width: 40px;
+    height: 1px;
+    background: currentColor;
+  }
+
+  @media screen and (min-width: 750px) {
+    .faf-page-header {
+      padding-block: 88px 32px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "FAF page header",
+  "class": "faf-section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Small label", "default": "House of FAF" },
+    { "type": "text", "id": "title", "label": "Title", "default": "Size Guide" },
+    { "type": "text", "id": "line", "label": "Italic line", "default": "Measurements are in centimetres." }
+  ],
+  "presets": [{ "name": "FAF page header" }]
+}
+{% endschema %}

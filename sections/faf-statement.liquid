@@ -1,0 +1,149 @@
+{% comment %}
+  House of FAF: brand statement, set the way the guideline sets its statements:
+  red spaced capitals centred on off-white, with faint oversized monograms at the edges.
+{% endcomment %}
+
+{% liquid
+  assign mark = 'faf-monogram.svg' | asset_url
+%}
+
+<div class="faf-statement faf-statement--{{ section.settings.tone }}" style="--faf-mark: url('{{ mark }}');">
+  {% if section.settings.show_watermark %}
+    <span class="faf-statement__watermark faf-statement__watermark--left faf-mark" aria-hidden="true"></span>
+    <span class="faf-statement__watermark faf-statement__watermark--right faf-mark" aria-hidden="true"></span>
+  {% endif %}
+  <div class="faf-statement__inner">
+    {% if section.settings.show_monogram %}
+      <span class="faf-statement__mark faf-mark" aria-hidden="true"></span>
+    {% endif %}
+    {% if section.settings.text != blank %}
+      <p class="faf-statement__text">{{ section.settings.text }}</p>
+    {% endif %}
+    {% if section.settings.signature != blank %}
+      <p class="faf-tagline">{{ section.settings.signature }}</p>
+    {% endif %}
+    {% if section.settings.label != blank %}
+      <a class="faf-link" href="{{ section.settings.link | default: routes.root_url }}">
+        {{- section.settings.label -}}
+      </a>
+    {% endif %}
+  </div>
+</div>
+
+{% stylesheet %}
+  .faf-statement {
+    position: relative;
+    overflow: hidden;
+    padding: 64px 20px;
+    text-align: center;
+    background: #f5f5f5;
+    color: var(--faf-red);
+  }
+
+  .faf-statement--red {
+    background: var(--faf-red);
+    color: #fff;
+  }
+
+  .faf-statement--black {
+    background: #000;
+    color: #fff;
+  }
+
+  .faf-statement__inner {
+    position: relative;
+    max-width: 980px;
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .faf-statement__mark {
+    display: block;
+    height: 72px;
+    aspect-ratio: 2528 / 2288;
+  }
+
+  .faf-statement__text {
+    margin: 0;
+    font-family: var(--font-body--family);
+    font-weight: 400;
+    font-size: clamp(0.9375rem, 0.8rem + 0.6vw, 1.25rem);
+    line-height: 1.45;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-wrap: balance;
+  }
+
+  .faf-statement__watermark {
+    position: absolute;
+    width: 300px;
+    aspect-ratio: 2528 / 2288;
+    opacity: 0.14;
+    pointer-events: none;
+  }
+
+  .faf-statement__watermark--left {
+    left: -150px;
+    top: -60px;
+  }
+
+  .faf-statement__watermark--right {
+    right: -140px;
+    bottom: -90px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .faf-statement {
+      padding: 104px 40px;
+    }
+
+    .faf-statement__watermark {
+      width: 520px;
+    }
+
+    .faf-statement__watermark--left {
+      left: -240px;
+      top: -120px;
+    }
+
+    .faf-statement__watermark--right {
+      right: -220px;
+      bottom: -170px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "FAF statement",
+  "class": "faf-section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "tone",
+      "label": "Colours",
+      "options": [
+        { "value": "offwhite", "label": "Red text on off-white" },
+        { "value": "red", "label": "White text on red" },
+        { "value": "black", "label": "White text on black" }
+      ],
+      "default": "offwhite"
+    },
+    { "type": "checkbox", "id": "show_monogram", "label": "Show monogram", "default": true },
+    { "type": "checkbox", "id": "show_watermark", "label": "Show faint monograms at the edges", "default": true },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Text",
+      "default": "Driven by her passion and background in fashion design, Farah Alawiya founded House of FAF, a contemporary fashion brand offering elegant and stylish ready-to-wear collections."
+    },
+    { "type": "text", "id": "signature", "label": "Italic line" },
+    { "type": "text", "id": "label", "label": "Link text" },
+    { "type": "url", "id": "link", "label": "Link" }
+  ],
+  "presets": [{ "name": "FAF statement" }]
+}
+{% endschema %}

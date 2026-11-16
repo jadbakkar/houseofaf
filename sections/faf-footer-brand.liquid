@@ -1,0 +1,120 @@
+{% comment %}
+  House of FAF: footer brand block. Monogram, wordmark, a short line and the footer menu, on black.
+{% endcomment %}
+
+{% liquid
+  assign menu = section.settings.menu
+%}
+
+{% if section.settings.only_suffix == blank or template.suffix == section.settings.only_suffix %}
+<div class="faf-footer-brand">
+  <a class="faf-footer-brand__home" href="{{ routes.root_url }}" aria-label="{{ shop.name }}">
+    <span
+      class="faf-footer-brand__mark faf-mark"
+      aria-hidden="true"
+      style="--faf-mark: url('{{ 'faf-monogram.svg' | asset_url }}');"
+    ></span>
+  </a>
+  {% if section.settings.wordmark != blank %}
+    <p class="faf-footer-brand__wordmark">{{ section.settings.wordmark }}</p>
+  {% endif %}
+  {% if section.settings.line != blank %}
+    <p class="faf-footer-brand__line">{{ section.settings.line }}</p>
+  {% endif %}
+  {% if menu != blank and menu.links.size > 0 %}
+    <nav aria-label="{{ menu.title | escape }}">
+      <ul class="faf-footer-brand__menu" role="list">
+        {% for link in menu.links %}
+          <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+        {% endfor %}
+      </ul>
+    </nav>
+  {% endif %}
+</div>
+{% endif %}
+
+{% stylesheet %}
+  .faf-footer-brand {
+    background: #000;
+    color: #fff;
+    padding: 64px 20px 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    text-align: center;
+  }
+
+  .faf-footer-brand__home {
+    color: inherit;
+  }
+
+  .faf-footer-brand__mark {
+    display: block;
+    height: 72px;
+    aspect-ratio: 2528 / 2288;
+  }
+
+  .faf-footer-brand__wordmark {
+    margin: 8px 0 0;
+    font-family: var(--font-heading--family);
+    font-size: 1.25rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  .faf-footer-brand__line {
+    margin: 0;
+    font-family: var(--font-heading--family);
+    font-style: italic;
+    font-size: 1rem;
+    opacity: 0.75;
+  }
+
+  .faf-footer-brand__menu {
+    list-style: none;
+    margin: 24px 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px 32px;
+  }
+
+  .faf-footer-brand__menu a {
+    color: inherit;
+    text-decoration: none;
+    font-family: var(--font-accent--family);
+    font-weight: var(--font-accent--weight);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding-block: 6px;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s ease;
+  }
+
+  .faf-footer-brand__menu a:hover {
+    border-bottom-color: #fff;
+  }
+
+  @media screen and (min-width: 750px) {
+    .faf-footer-brand {
+      padding: 88px 40px 36px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "FAF footer brand",
+  "class": "faf-section",
+  "settings": [
+    { "type": "text", "id": "wordmark", "label": "Wordmark", "default": "House of FAF" },
+    { "type": "text", "id": "line", "label": "Line", "default": "Ready-to-wear · Timeless pieces · Modern feminine" },
+    { "type": "link_list", "id": "menu", "label": "Menu", "default": "footer" },
+    { "type": "text", "id": "only_suffix", "label": "Show only on template suffix", "info": "Leave empty to show everywhere." }
+  ]
+}
+{% endschema %}

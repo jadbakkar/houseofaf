@@ -1,0 +1,21 @@
+{% doc %}
+  House of FAF: one photo for the mood grid. Uses the picked image, or a demo asset when none is set.
+
+  @param {image} [image] - Image chosen in the theme editor
+  @param {string} fallback - File name of the demo asset to use when no image is set
+{% enddoc %}
+
+{%- if image != blank -%}
+  {{
+    image
+    | image_url: width: 1200
+    | image_tag:
+      widths: '300, 450, 600, 900, 1200',
+      sizes: '(min-width: 750px) 33vw, 50vw',
+      class: 'faf-mood__photo',
+      loading: 'lazy',
+      alt: image.alt
+  }}
+{%- else -%}
+  <img class="faf-mood__photo" src="{{ fallback | asset_url }}" alt="" loading="lazy" width="900" height="1200">
+{%- endif -%}

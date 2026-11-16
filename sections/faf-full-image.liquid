@@ -1,0 +1,84 @@
+{% comment %}
+  Section contract.
+  House of FAF: full image. One photo across the full width of the page,
+  always shown whole at its own proportions (never cropped). Optional link on the photo.
+  @example
+  <!-- Home page, after The Collection row: the full halter photo from the guideline -->
+{% endcomment %}
+
+{% liquid
+  assign image = section.settings.image
+  assign demo = section.settings.demo_image
+  assign link = section.settings.link
+  # A link needs a readable name: the picked image's alt text
+  assign is_link = false
+  if link != blank and image.alt != blank
+    assign is_link = true
+  endif
+%}
+
+{% if image != blank or demo != blank %}
+  <div class="faf-full-image">
+    {% if is_link %}<a class="faf-full-image__link" href="{{ link }}">{% endif %}
+    {% if image != blank %}
+      {{
+        image
+        | image_url: width: 3200
+        | image_tag:
+          widths: '750, 1100, 1500, 2000, 2600, 3200',
+          sizes: '100vw',
+          class: 'faf-full-image__image',
+          loading: 'lazy',
+          alt: image.alt
+      }}
+    {% else %}
+      <img
+        class="faf-full-image__image"
+        src="{{ demo | asset_url }}"
+        alt=""
+        loading="lazy"
+        width="{{ section.settings.demo_width }}"
+        height="{{ section.settings.demo_height }}"
+      >
+    {% endif %}
+    {% if is_link %}</a>{% endif %}
+  </div>
+{% endif %}
+
+{% stylesheet %}
+  .faf-full-image {
+    background: #fff;
+  }
+
+  .faf-full-image__link {
+    display: block;
+  }
+
+  .faf-full-image__link:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: -4px;
+  }
+
+  /* Whole photo at its own proportions: never cropped */
+  .faf-full-image__image {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "FAF full image",
+  "class": "faf-section",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image", "info": "Shown across the full width, uncropped." },
+    { "type": "url", "id": "link", "label": "Link", "info": "Optional. Needs alt text on the image." },
+    { "type": "header", "content": "Demo" },
+    { "type": "text", "id": "demo_image", "label": "Demo image file", "info": "Used until an image is picked above.", "default": "faf-guide-halter-wide.jpg" },
+    { "type": "number", "id": "demo_width", "label": "Demo image width (px)", "default": 1672 },
+    { "type": "number", "id": "demo_height", "label": "Demo image height (px)", "default": 941 }
+  ],
+  "presets": [{ "name": "FAF full image" }]
+}
+{% endschema %}

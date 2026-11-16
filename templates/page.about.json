@@ -1,0 +1,70 @@
+{
+  "sections": {
+    "hero": {
+      "type": "faf-about-hero",
+      "settings": {
+        "eyebrow": "The House",
+        "overlay": 25
+      }
+    },
+    "founder_statement": {
+      "type": "faf-statement",
+      "settings": {
+        "tone": "offwhite",
+        "show_monogram": false,
+        "show_watermark": true,
+        "text": "Driven by her passion and background in fashion design, Farah Alawiya founded House of FAF, a contemporary fashion brand offering elegant and stylish ready-to-wear collections."
+      }
+    },
+    "name": {
+      "type": "faf-about-name",
+      "settings": {
+        "text": "FAF, an abbreviation of Farah, reflecting her identity through timeless elegance and refined fashion."
+      }
+    },
+    "values": {
+      "type": "faf-about-values",
+      "settings": {}
+    },
+    "founder": {
+      "type": "faf-feature",
+      "settings": {
+        "image_side": "right",
+        "eyebrow": "The Founder",
+        "heading": "Farah Alawiya",
+        "tagline": "A fashion house founded by Farah, where timeless style meets modern elegance.",
+        "text": "",
+        "label": "Shop the collection",
+        "link": "shopify://collections/all"
+      }
+    },
+    "pattern": {
+      "type": "faf-pattern-band",
+      "settings": {
+        "height": 400,
+        "height_mobile": 280
+      }
+    },
+    "closing": {
+      "type": "faf-statement",
+      "settings": {
+        "tone": "red",
+        "show_monogram": true,
+        "show_watermark": false,
+        "text": "With love, FAF.",
+        "signature": "",
+        "label": "Shop the collection",
+        "link": "shopify://collections/all"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "founder_statement",
+    "name",
+    "values",
+    "founder",
+    "pattern",
+    "closing"
+  ]
+}

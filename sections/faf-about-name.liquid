@@ -1,0 +1,114 @@
+{% comment %}
+  House of FAF: the name. Left half of the monogram >>> right half >>> full monogram.
+  Halves are the same masked monogram clipped by an overflow-hidden wrapper at half width.
+{% endcomment %}
+
+<div class="faf-about-name" style="--faf-mark: url('{{ 'faf-monogram.svg' | asset_url }}');">
+  <div class="faf-about-name__inner">
+    <div class="faf-about-name__row" aria-hidden="true">
+      <span class="faf-about-name__item faf-about-name__item--half">
+        <span class="faf-about-name__mark faf-mark"></span>
+      </span>
+      <span class="faf-about-name__arrows">&gt;&gt;&gt;</span>
+      <span class="faf-about-name__item faf-about-name__item--half faf-about-name__item--right">
+        <span class="faf-about-name__mark faf-mark"></span>
+      </span>
+      <span class="faf-about-name__arrows">&gt;&gt;&gt;</span>
+      <span class="faf-about-name__item">
+        <span class="faf-about-name__mark faf-mark"></span>
+      </span>
+    </div>
+    {% if section.settings.text != blank %}
+      <p class="faf-about-name__text">{{ section.settings.text }}</p>
+    {% endif %}
+  </div>
+</div>
+
+{% stylesheet %}
+  .faf-about-name {
+    padding: 56px 16px;
+    background: #f5f5f5;
+    color: var(--faf-red);
+    text-align: center;
+  }
+
+  .faf-about-name__inner {
+    max-width: 880px;
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 36px;
+  }
+
+  .faf-about-name__row {
+    --faf-name-w: clamp(64px, 18vw, 180px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(8px, 3vw, 36px);
+  }
+
+  .faf-about-name__item {
+    display: block;
+    flex: none;
+    width: var(--faf-name-w);
+    height: calc(var(--faf-name-w) * 2288 / 2528);
+    overflow: hidden;
+  }
+
+  .faf-about-name__item--half {
+    width: calc(var(--faf-name-w) / 2);
+  }
+
+  .faf-about-name__mark {
+    display: block;
+    height: 100%;
+    aspect-ratio: 2528 / 2288;
+  }
+
+  .faf-about-name__item--right .faf-about-name__mark {
+    transform: translateX(-50%);
+  }
+
+  .faf-about-name__arrows {
+    flex: none;
+    font-family: var(--font-body--family);
+    font-size: clamp(0.625rem, 0.5rem + 0.6vw, 1rem);
+    letter-spacing: 0.1em;
+    line-height: 1;
+  }
+
+  .faf-about-name__text {
+    margin: 0;
+    max-width: 640px;
+    font-family: var(--font-body--family);
+    font-size: clamp(0.8125rem, 0.75rem + 0.4vw, 1.0625rem);
+    line-height: 1.6;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-wrap: balance;
+  }
+
+  @media screen and (min-width: 750px) {
+    .faf-about-name {
+      padding: 96px 40px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "FAF about name",
+  "class": "faf-section",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Text",
+      "default": "FAF, an abbreviation of Farah, reflecting her identity through timeless elegance and refined fashion."
+    }
+  ],
+  "presets": [{ "name": "FAF about name" }]
+}
+{% endschema %}

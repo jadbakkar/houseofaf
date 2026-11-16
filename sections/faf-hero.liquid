@@ -1,0 +1,392 @@
+{% comment %}
+  House of FAF: single campaign hero. One full-width image, one line, one button.
+  Optional: an oversized monogram flourish bleeding off the edge away from the text, and a choice of image motion.
+  Demo image comes from theme assets until a real one is picked.
+{% endcomment %}
+
+{% liquid
+  assign image = section.settings.image
+  assign link = section.settings.link | default: routes.all_products_collection_url
+  assign flourish = section.settings.flourish | default: 'none'
+  assign motion = section.settings.motion | default: 'none'
+%}
+
+<div
+  class="faf-hero faf-hero--{{ section.settings.text_position }} faf-hero--motion-{{ motion }}"
+  style="--faf-hero-focus: {{ section.settings.focus | default: '22% 0%' }};"
+>
+  {% if image != blank %}
+    {{
+      image
+      | image_url: width: 2800
+      | image_tag:
+        widths: '750, 1100, 1500, 2000, 2800',
+        sizes: '100vw',
+        class: 'faf-hero__image',
+        loading: 'eager',
+        fetchpriority: 'high',
+        alt: image.alt
+    }}
+  {% else %}
+    <img
+      class="faf-hero__image"
+      src="{{ section.settings.demo_image | default: 'faf-demo-hero-wide.jpg' | asset_url }}"
+      alt=""
+      loading="eager"
+      fetchpriority="high"
+      width="2880"
+      height="1635"
+    >
+  {% endif %}
+
+  {% if flourish != 'none' %}
+    <span
+      class="faf-hero__flourish faf-hero__flourish--{{ flourish }} faf-mark"
+      aria-hidden="true"
+      style="--faf-mark: url('{{ 'faf-monogram.svg' | asset_url }}');"
+    ></span>
+  {% endif %}
+
+  <div class="faf-hero__content">
+    <div class="faf-hero__text">
+      {% if section.settings.eyebrow != blank %}
+        <p class="faf-hero__eyebrow">{{ section.settings.eyebrow }}</p>
+      {% endif %}
+      {% if section.settings.heading != blank %}
+        <h1 class="faf-hero__heading">{{ section.settings.heading }}</h1>
+      {% endif %}
+      {% if section.settings.text != blank %}
+        <p class="faf-tagline">{{ section.settings.text }}</p>
+      {% endif %}
+    </div>
+    {% if section.settings.label != blank %}
+      <a class="faf-hero__button" href="{{ link }}">{{ section.settings.label }}</a>
+    {% endif %}
+  </div>
+</div>
+
+{% style %}
+  {{ settings.type_accent_font | font_modify: 'weight', '200' | font_face: font_display: 'swap' }}{% endstyle %}
+
+{% stylesheet %}
+  .faf-hero {
+    position: relative;
+    height: 88svh;
+    min-height: 520px;
+    overflow: hidden;
+    background: #000;
+    color: #fff;
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .faf-hero__image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--faf-hero-focus, 22% 0%);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .faf-hero__image {
+      animation: faf-hero-zoom 14s ease-out both;
+    }
+  }
+
+  @keyframes faf-hero-zoom {
+    from {
+      transform: scale(1.06);
+    }
+
+    to {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes faf-hero-zoom-subtle {
+    from {
+      transform: scale(1.03);
+    }
+
+    to {
+      transform: scale(1);
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .faf-hero--motion-subtle .faf-hero__image {
+      animation-name: faf-hero-zoom-subtle;
+    }
+
+    .faf-hero--motion-none .faf-hero__image {
+      animation: none;
+    }
+  }
+
+  .faf-hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgb(0 0 0 / 0.55) 0%, rgb(0 0 0 / 0) 42%),
+      linear-gradient(to bottom, rgb(0 0 0 / 0.3) 0%, rgb(0 0 0 / 0) 20%);
+    pointer-events: none;
+  }
+
+  /* Oversized monogram, painted through the .faf-mark mask so it takes `color`.
+     Phones: top right corner. From tablet up: the top corner on the text's side, above the text,
+     which keeps it off the photo's subject (usually opposite the text). */
+  .faf-hero__flourish {
+    position: absolute;
+    z-index: 1;
+    top: 12%;
+    right: 0;
+    height: 32%;
+    aspect-ratio: 2528 / 2288;
+    transform: translateX(58%);
+    pointer-events: none;
+  }
+
+  .faf-hero__flourish--light {
+    color: rgb(255 255 255 / 0.3);
+  }
+
+  .faf-hero__flourish--accent {
+    color: var(--faf-red);
+  }
+
+  /* Clean, compact stack: small label, spaced-capital title (the guideline's Gotham voice,
+     set in the body sans), a short hairline, then a burgundy button. */
+  .faf-hero__content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    padding: 0 24px 44px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  /* Eyebrow, heading and tagline stack together; the button sits under them (phones) or beside them (desktop) */
+  .faf-hero__text {
+    display: flex;
+    flex-direction: column;
+    align-items: inherit;
+    gap: inherit;
+  }
+
+  .faf-hero__eyebrow {
+    margin: 0;
+    font-family: var(--font-body--family);
+    font-weight: var(--font-body--weight);
+    font-size: 0.6875rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    opacity: 0.85;
+  }
+
+  .faf-hero__heading {
+    margin: 0;
+    max-width: 18em;
+    /* Same face as the small labels (e.g. "The Collection"): the accent font */
+    font-family: var(--font-accent--family);
+    font-weight: 200;
+    font-size: clamp(1.5rem, 1.15rem + 1.5vw, 2.5rem);
+    line-height: 1.15;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: inherit;
+  }
+
+  .faf-hero .faf-tagline {
+    max-width: 26em;
+  }
+
+  .faf-hero__button {
+    margin-top: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 0 34px;
+    background: transparent;
+    border: 1px solid rgb(255 255 255 / 0.8);
+    color: #fff;
+    font-family: var(--font-body--family);
+    font-weight: 400;
+    font-size: 0.625rem;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease;
+  }
+
+  .faf-hero__button:hover,
+  .faf-hero__button:active {
+    background: #fff;
+    border-color: #fff;
+    color: #000;
+  }
+
+  /* Centred: optical centring for the wide tracking (trailing space after the last letter) */
+  .faf-hero--center .faf-hero__content {
+    align-items: center;
+    text-align: center;
+  }
+
+  .faf-hero--center .faf-hero__heading,
+  .faf-hero--center .faf-hero__eyebrow {
+    margin-right: -0.3em;
+  }
+
+  /* The theme's default ring is black, which disappears on the dark photo */
+  .faf-hero__button:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+  }
+
+  /* Mobile only: quieter, more editorial. Smaller wide-tracked title, hairline ghost button,
+     more air under the text, and a soft scrim so the thin white type stays readable. */
+  @media screen and (max-width: 749px) {
+    .faf-hero::after {
+      background: linear-gradient(to top, rgb(0 0 0 / 0.5) 0%, rgb(0 0 0 / 0) 48%),
+        linear-gradient(to bottom, rgb(0 0 0 / 0.25) 0%, rgb(0 0 0 / 0) 18%);
+    }
+
+    .faf-hero__content {
+      padding: 0 24px 40px;
+      gap: 14px;
+    }
+
+    .faf-hero__eyebrow {
+      font-size: 0.625rem;
+      letter-spacing: 0.4em;
+      opacity: 0.7;
+    }
+
+    .faf-hero__heading {
+      font-size: clamp(1.56rem, 1.17rem + 2.08vw, 1.885rem);
+      letter-spacing: 0.42em;
+      line-height: 1.3;
+    }
+
+    .faf-hero--center .faf-hero__heading,
+    .faf-hero--center .faf-hero__eyebrow {
+      margin-right: -0.42em;
+    }
+
+  }
+
+  @media screen and (min-width: 750px) {
+    .faf-hero {
+      height: 94svh;
+      min-height: 620px;
+    }
+
+    /* Desktop: text tucked into the bottom-left corner, button right next to it with a small gap */
+    .faf-hero .faf-hero__content {
+      flex-direction: row;
+      flex-wrap: wrap;
+      --faf-hero-size: clamp(3rem, 2.3rem + 3vw, 5rem);
+      justify-content: flex-start;
+      align-items: flex-end;
+      column-gap: 24px;
+      row-gap: 20px;
+      padding: 0 20px 24px;
+      text-align: left;
+    }
+
+    .faf-hero__text {
+      align-items: flex-start;
+      gap: 20px;
+    }
+
+    .faf-hero__content > .faf-hero__button {
+      /* Exactly the capital-letter height of the heading (about 0.7em), resting on its baseline */
+      min-height: 0;
+      height: calc(var(--faf-hero-size) * 0.7);
+      padding: 0 64px;
+      margin: 0 0 calc(var(--faf-hero-size) * 0.19);
+    }
+
+    .faf-hero--center .faf-hero__heading,
+    .faf-hero--center .faf-hero__eyebrow {
+      margin-right: 0;
+    }
+
+    /* Desktop: heading at 2x */
+    .faf-hero__heading {
+      font-size: var(--faf-hero-size);
+      line-height: 1.1;
+    }
+
+    /* Just under half of the mark stays visible; the rest bleeds off the edge */
+    .faf-hero__flourish {
+      top: 14%;
+      height: min(46%, 40vw);
+      transform: translateX(55%);
+    }
+
+    .faf-hero--left .faf-hero__flourish {
+      right: auto;
+      left: 0;
+      transform: translateX(-55%);
+    }
+
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "FAF hero",
+  "class": "faf-section",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "text", "id": "demo_image", "label": "Demo image file", "info": "Used until an image is picked above.", "default": "faf-demo-hero-wide.jpg" },
+    { "type": "text", "id": "focus", "label": "Image focus point", "info": "Horizontal and vertical position, for example: center 10%", "default": "22% 0%" },
+    { "type": "text", "id": "eyebrow", "label": "Small label", "default": "The new collection" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Timeless, by design" },
+    { "type": "textarea", "id": "text", "label": "Italic line", "default": "Ready-to-wear pieces of quiet confidence." },
+    { "type": "text", "id": "label", "label": "Button text", "default": "Shop the collection" },
+    { "type": "url", "id": "link", "label": "Button link" },
+    {
+      "type": "select",
+      "id": "text_position",
+      "label": "Text position",
+      "info": "Centre applies on phones too. Left and Right apply from tablet up.",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Centre" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "right"
+    },
+    {
+      "type": "select",
+      "id": "flourish",
+      "label": "Monogram flourish",
+      "info": "A large monogram bleeding off a top corner, above the text.",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "light", "label": "Light" },
+        { "value": "accent", "label": "Accent colour" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "select",
+      "id": "motion",
+      "label": "Image motion",
+      "options": [
+        { "value": "zoom", "label": "Slow zoom" },
+        { "value": "subtle", "label": "Subtle zoom" },
+        { "value": "none", "label": "None" }
+      ],
+      "default": "none"
+    }
+  ],
+  "presets": [{ "name": "FAF hero" }]
+}
+{% endschema %}

@@ -1,0 +1,133 @@
+{% comment %}
+  House of FAF: 404. Stone with the faint monogram pattern, a centred white card with thin black inner frame.
+{% endcomment %}
+
+<div class="faf-404" style="--faf-mark: url('{{ 'faf-monogram.svg' | asset_url }}'); --faf-404-pattern: url('{{ 'faf-pattern.svg' | asset_url }}');">
+  <div class="faf-404__card">
+    <div class="faf-404__body">
+      <span class="faf-404__mark faf-mark" aria-hidden="true"></span>
+      <h1 class="faf-404__title">{{ section.settings.heading }}</h1>
+      <span class="faf-404__rule" aria-hidden="true"></span>
+      {% if section.settings.line != blank %}
+        <p class="faf-tagline">{{ section.settings.line }}</p>
+      {% endif %}
+      <a class="faf-404__button" href="{{ routes.root_url }}">{{ section.settings.button_label }}</a>
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .faf-404 {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 70vh;
+    padding: 48px 16px;
+    background: var(--faf-stone);
+    overflow: hidden;
+  }
+
+  .faf-404::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--faf-404-pattern);
+    background-size: 308px auto;
+    background-position: center;
+    opacity: 0.18;
+    pointer-events: none;
+  }
+
+  .faf-404__card {
+    position: relative;
+    width: 100%;
+    max-width: 560px;
+    padding: 56px 24px;
+    background: #fff;
+    color: #000;
+    text-align: center;
+  }
+
+  .faf-404__card::before {
+    content: '';
+    position: absolute;
+    inset: 10px;
+    border: 1px solid #000;
+    pointer-events: none;
+  }
+
+  .faf-404__body {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .faf-404__mark {
+    display: block;
+    height: 72px;
+    aspect-ratio: 2528 / 2288;
+    color: var(--faf-red);
+  }
+
+  .faf-404__title {
+    margin: 0;
+    font-family: var(--font-heading--family);
+    font-weight: var(--font-heading--weight);
+    font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.5rem);
+    line-height: 1.1;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .faf-404__rule {
+    display: block;
+    width: 40px;
+    height: 1px;
+    background: currentColor;
+  }
+
+  .faf-404__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    margin-top: 12px;
+    padding: 0 36px;
+    border: 1px solid #000;
+    background: #000;
+    color: #fff;
+    font-family: var(--font-accent--family);
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .faf-404__button:hover {
+    background: var(--faf-red);
+    border-color: var(--faf-red);
+    color: #fff;
+  }
+
+  .faf-404__button:focus-visible {
+    outline: 2px solid var(--faf-red);
+    outline-offset: 3px;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "FAF 404",
+  "class": "faf-section",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Page not found" },
+    { "type": "text", "id": "line", "label": "Italic line", "default": "This page has moved or no longer exists." },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Back to the House" }
+  ],
+  "presets": [{ "name": "FAF 404" }]
+}
+{% endschema %}

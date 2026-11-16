@@ -1,0 +1,179 @@
+{% comment %}
+  House of FAF: collection header. Off-white band with a red eyebrow, the collection title as a spaced
+  serif H1, an italic description and a faint oversized monogram bleeding off one corner.
+  When the collection holds no products at all, it also renders the brand empty state
+  (the theme's own empty message is hidden by faf-shop.css in that case).
+{% endcomment %}
+
+{% liquid
+  assign mark = 'faf-monogram.svg' | asset_url
+  assign title = collection.title
+  if collection.handle == 'all'
+    assign title = section.settings.all_title | default: collection.title
+  endif
+  assign is_empty = false
+  if collection.all_products_count == 0
+    assign is_empty = true
+  endif
+%}
+
+<div class="faf-collection-header" style="--faf-mark: url('{{ mark }}');">
+  <span class="faf-collection-header__watermark faf-mark" aria-hidden="true"></span>
+  <div class="faf-collection-header__inner">
+    {% if section.settings.eyebrow != blank %}
+      <p class="faf-eyebrow faf-collection-header__eyebrow">{{ section.settings.eyebrow }}</p>
+    {% endif %}
+    <h1 class="faf-collection-header__title">{{ title }}</h1>
+    <span class="faf-collection-header__rule" aria-hidden="true"></span>
+    {% if section.settings.show_description and collection.description != blank %}
+      <div class="faf-tagline faf-collection-header__description">{{ collection.description }}</div>
+    {% endif %}
+  </div>
+</div>
+
+{% if is_empty %}
+  {% render 'faf-demo-grid' %}
+{% endif %}
+
+{% if is_empty and false %}
+  <div class="faf-collection-empty" style="--faf-mark: url('{{ mark }}');">
+    <span class="faf-collection-empty__mark faf-mark" aria-hidden="true"></span>
+    <h2 class="faf-collection-empty__title">{{ section.settings.empty_heading }}</h2>
+    {% if section.settings.empty_text != blank %}
+      <p class="faf-tagline">{{ section.settings.empty_text }}</p>
+    {% endif %}
+    {% if section.settings.empty_link_label != blank %}
+      <a class="faf-link" href="{{ routes.root_url }}">{{ section.settings.empty_link_label }}</a>
+    {% endif %}
+  </div>
+{% endif %}
+
+{% stylesheet %}
+  .faf-collection-header {
+    position: relative;
+    overflow: hidden;
+    padding: 48px 20px 40px;
+    text-align: center;
+    background: #f5f5f5;
+    color: var(--faf-red);
+  }
+
+  .faf-collection-header__watermark {
+    position: absolute;
+    right: -110px;
+    top: -70px;
+    width: 280px;
+    aspect-ratio: 2528 / 2288;
+    opacity: 0.14;
+    pointer-events: none;
+  }
+
+  .faf-collection-header__inner {
+    position: relative;
+    max-width: 760px;
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .faf-collection-header__title {
+    margin: 0;
+    font-family: var(--font-heading--family);
+    font-weight: 500;
+    font-size: clamp(1.75rem, 1.3rem + 2vw, 3rem);
+    line-height: 1.15;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    overflow-wrap: anywhere;
+  }
+
+  .faf-collection-header__rule {
+    display: block;
+    width: 48px;
+    height: 1px;
+    background: currentColor;
+  }
+
+  .faf-collection-header__description {
+    max-width: 56ch;
+  }
+
+  .faf-collection-header__description p {
+    margin: 0;
+  }
+
+  .faf-collection-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 24px 20px 88px;
+    text-align: center;
+    background: #f5f5f5;
+    color: var(--faf-red);
+  }
+
+  .faf-collection-empty__mark {
+    display: block;
+    height: 72px;
+    aspect-ratio: 2528 / 2288;
+  }
+
+  .faf-collection-empty__title {
+    margin: 0;
+    font-family: var(--font-heading--family);
+    font-weight: 500;
+    font-size: clamp(1.25rem, 1.05rem + 1vw, 1.75rem);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .faf-collection-empty .faf-link {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    padding-block: 0;
+  }
+
+  @media screen and (min-width: 750px) {
+    .faf-collection-header {
+      padding: 80px 40px 64px;
+    }
+
+    .faf-collection-header__watermark {
+      width: 460px;
+      right: -180px;
+      top: -130px;
+    }
+
+    .faf-collection-empty {
+      padding-block: 40px 128px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "FAF collection header",
+  "class": "faf-section",
+  "enabled_on": { "templates": ["collection"] },
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The Collection" },
+    {
+      "type": "text",
+      "id": "all_title",
+      "label": "Title for the all-products collection",
+      "info": "Replaces the title \"Products\" on /collections/all.",
+      "default": "Shop All"
+    },
+    { "type": "checkbox", "id": "show_description", "label": "Show collection description", "default": true },
+    { "type": "header", "content": "Empty state" },
+    { "type": "text", "id": "empty_heading", "label": "Heading", "default": "Nothing here yet" },
+    { "type": "text", "id": "empty_text", "label": "Italic line", "default": "New pieces are on their way." },
+    { "type": "text", "id": "empty_link_label", "label": "Link text", "default": "Back to the House" }
+  ],
+  "presets": [{ "name": "FAF collection header" }]
+}
+{% endschema %}

@@ -1,0 +1,21 @@
+{
+  "sections": {
+    "contact": {
+      "type": "faf-contact",
+      "settings": {
+        "heading": "House of FAF",
+        "tagline": "We would love to hear from you.",
+        "email_label": "Email",
+        "email": "hello@houseofaf.com",
+        "instagram_label": "Instagram",
+        "instagram": "@houseofaf",
+        "hours_label": "Hours",
+        "hours": "Monday to Friday, 9 to 6",
+        "button_label": "Send message"
+      }
+    }
+  },
+  "order": [
+    "contact"
+  ]
+}

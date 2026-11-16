@@ -1,0 +1,193 @@
+{% comment %}
+  House of FAF: split hero. Two full-height image tiles side by side (stacked on mobile),
+  each with an eyebrow, a title and a link. Demo images come from theme assets until the
+  merchant picks real ones in the theme editor.
+{% endcomment %}
+
+<div class="faf-split-hero">
+  {% for i in (1..2) %}
+    {% liquid
+      assign image_key = 'image_' | append: i
+      assign eyebrow_key = 'eyebrow_' | append: i
+      assign heading_key = 'heading_' | append: i
+      assign label_key = 'label_' | append: i
+      assign link_key = 'link_' | append: i
+      assign image = section.settings[image_key]
+      assign heading = section.settings[heading_key]
+      assign link = section.settings[link_key] | default: routes.all_products_collection_url
+      if i == 1
+        assign fallback = 'faf-demo-hero-new.jpg'
+        assign loading = 'eager'
+      else
+        assign fallback = 'faf-demo-hero-best.jpg'
+        assign loading = 'eager'
+      endif
+    %}
+    <a class="faf-split-hero__tile" href="{{ link }}">
+      {% if image != blank %}
+        {{
+          image
+          | image_url: width: 2000
+          | image_tag:
+            widths: '600, 900, 1200, 1600, 2000',
+            sizes: '(min-width: 750px) 50vw, 100vw',
+            class: 'faf-split-hero__image',
+            loading: loading,
+            fetchpriority: 'high',
+            alt: image.alt
+        }}
+      {% else %}
+        <img
+          class="faf-split-hero__image"
+          src="{{ fallback | asset_url }}"
+          alt=""
+          loading="{{ loading }}"
+          width="1600"
+          height="2132"
+        >
+      {% endif %}
+      {% if i == 1 and section.settings.show_monogram %}
+        <span
+          class="faf-split-hero__monogram faf-mark"
+          aria-hidden="true"
+          style="--faf-mark: url('{{ 'faf-monogram.svg' | asset_url }}');"
+        ></span>
+      {% endif %}
+      <span class="faf-split-hero__content">
+        {% if section.settings[eyebrow_key] != blank %}
+          <span class="faf-eyebrow">{{ section.settings[eyebrow_key] }}</span>
+        {% endif %}
+        {% if heading != blank %}
+          <span class="faf-split-hero__heading">{{ heading }}</span>
+        {% endif %}
+        {% if section.settings[label_key] != blank %}
+          <span class="faf-link faf-split-hero__link">{{ section.settings[label_key] }}</span>
+        {% endif %}
+      </span>
+    </a>
+  {% endfor %}
+</div>
+
+{% stylesheet %}
+  .faf-split-hero {
+    display: grid;
+    grid-template-columns: 1fr;
+    background: #000;
+  }
+
+  .faf-split-hero__tile {
+    position: relative;
+    display: block;
+    height: 72svh;
+    min-height: 420px;
+    overflow: hidden;
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .faf-split-hero__image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    transition: transform 1.2s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  .faf-split-hero__tile::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgb(0 0 0 / 0.55) 0%, rgb(0 0 0 / 0) 45%),
+      linear-gradient(to bottom, rgb(0 0 0 / 0.3) 0%, rgb(0 0 0 / 0) 22%);
+    pointer-events: none;
+  }
+
+  /* Oversized red monogram bleeding off the tile edge, as on the guideline's campaign image */
+  .faf-split-hero__monogram {
+    position: absolute;
+    right: -20%;
+    top: 13%;
+    width: 60%;
+    aspect-ratio: 2528 / 2288;
+    color: var(--faf-red);
+    pointer-events: none;
+  }
+
+  .faf-split-hero__content {
+    position: absolute;
+    z-index: 1;
+    left: 20px;
+    right: 20px;
+    bottom: 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .faf-split-hero__heading {
+    font-family: var(--font-heading--family);
+    font-weight: var(--font-heading--weight);
+    font-size: clamp(2.25rem, 1.4rem + 2.6vw, 3.5rem);
+    line-height: 1.05;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .faf-split-hero__link {
+    margin-top: 6px;
+  }
+
+  .faf-split-hero__tile:hover .faf-split-hero__link {
+    color: #fff;
+    border-bottom-color: var(--faf-red);
+  }
+
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .faf-split-hero__tile:hover .faf-split-hero__image {
+      transform: scale(1.03);
+    }
+  }
+
+  @media screen and (min-width: 750px) {
+    .faf-split-hero {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .faf-split-hero__tile {
+      height: 92svh;
+      min-height: 560px;
+    }
+
+    .faf-split-hero__content {
+      left: 40px;
+      right: 40px;
+      bottom: 44px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "FAF split hero",
+  "class": "faf-section",
+  "settings": [
+    { "type": "header", "content": "Left tile" },
+    { "type": "image_picker", "id": "image_1", "label": "Image" },
+    { "type": "text", "id": "eyebrow_1", "label": "Small label", "default": "Just in" },
+    { "type": "text", "id": "heading_1", "label": "Title", "default": "New Arrivals" },
+    { "type": "text", "id": "label_1", "label": "Link text", "default": "Shop now" },
+    { "type": "url", "id": "link_1", "label": "Link" },
+    { "type": "checkbox", "id": "show_monogram", "label": "Show large red monogram", "default": true },
+    { "type": "header", "content": "Right tile" },
+    { "type": "image_picker", "id": "image_2", "label": "Image" },
+    { "type": "text", "id": "eyebrow_2", "label": "Small label", "default": "Most loved" },
+    { "type": "text", "id": "heading_2", "label": "Title", "default": "Bestsellers" },
+    { "type": "text", "id": "label_2", "label": "Link text", "default": "Shop now" },
+    { "type": "url", "id": "link_2", "label": "Link" }
+  ],
+  "presets": [{ "name": "FAF split hero" }]
+}
+{% endschema %}

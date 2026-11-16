@@ -1,0 +1,175 @@
+{% comment %}
+  House of FAF: brand feature. Large image on one side, text panel on the other.
+{% endcomment %}
+
+{% liquid
+  assign image = section.settings.image
+%}
+
+<div class="faf-feature{% if section.settings.image_side == 'right' %} faf-feature--reverse{% endif %}">
+  <div class="faf-feature__media">
+    {% if image != blank %}
+      {{
+        image
+        | image_url: width: 2000
+        | image_tag:
+          widths: '600, 900, 1200, 1600, 2000',
+          sizes: '(min-width: 750px) 50vw, 100vw',
+          class: 'faf-feature__image',
+          loading: 'lazy',
+          alt: image.alt
+      }}
+    {% else %}
+      <img class="faf-feature__image" src="{{ 'faf-guide-staircase.jpg' | asset_url }}" alt="" loading="lazy" width="604" height="941">
+    {% endif %}
+  </div>
+
+  <div class="faf-feature__panel">
+    <div class="faf-feature__content">
+      <span
+        class="faf-feature__mark faf-mark"
+        aria-hidden="true"
+        style="--faf-mark: url('{{ 'faf-monogram.svg' | asset_url }}');"
+      ></span>
+      {% if section.settings.eyebrow != blank %}
+        <p class="faf-eyebrow">{{ section.settings.eyebrow }}</p>
+      {% endif %}
+      {% if section.settings.heading != blank %}
+        <h2 class="faf-feature__heading">{{ section.settings.heading }}</h2>
+      {% endif %}
+      {% if section.settings.tagline != blank %}
+        <p class="faf-tagline">{{ section.settings.tagline }}</p>
+      {% endif %}
+      {% if section.settings.text != blank %}
+        <p class="faf-feature__text">{{ section.settings.text }}</p>
+      {% endif %}
+      {% if section.settings.label != blank %}
+        <a class="faf-link" href="{{ section.settings.link | default: routes.root_url }}">
+          {{- section.settings.label -}}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .faf-feature {
+    display: grid;
+    grid-template-columns: 1fr;
+    background: var(--faf-stone);
+    color: #000;
+  }
+
+  /* The photo keeps its own proportions: never cropped */
+  .faf-feature__media {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 24px 0;
+  }
+
+  .faf-feature__image {
+    display: block;
+    width: 100%;
+    max-width: 520px;
+    height: auto;
+  }
+
+  .faf-feature__panel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 64px 24px;
+  }
+
+  .faf-feature__content {
+    max-width: 440px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    text-align: center;
+  }
+
+  .faf-feature__mark {
+    display: block;
+    height: 64px;
+    aspect-ratio: 2528 / 2288;
+    margin-bottom: 8px;
+  }
+
+  .faf-feature__heading {
+    margin: 0;
+    font-family: var(--font-heading--family);
+    font-weight: var(--font-heading--weight);
+    font-size: clamp(1.875rem, 1.4rem + 1.6vw, 2.5rem);
+    line-height: 1.1;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .faf-feature__text {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.75;
+  }
+
+  .faf-feature .faf-link {
+    margin-top: 8px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .faf-feature {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .faf-feature--reverse .faf-feature__media {
+      order: 2;
+    }
+
+    .faf-feature__media {
+      padding: 96px 56px;
+    }
+
+    .faf-feature__panel {
+      padding: 96px 56px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "FAF feature",
+  "class": "faf-section",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    {
+      "type": "select",
+      "id": "image_side",
+      "label": "Image side on desktop",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    { "type": "text", "id": "eyebrow", "label": "Small label", "default": "The House" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "House of FAF" },
+    {
+      "type": "textarea",
+      "id": "tagline",
+      "label": "Italic line",
+      "default": "More than fashion, FAF is a personal expression of confidence, style, and identity."
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Text",
+      "default": "Driven by her passion and background in fashion design, Farah Alawiya founded House of FAF, a contemporary fashion brand offering elegant and stylish ready-to-wear collections."
+    },
+    { "type": "text", "id": "label", "label": "Link text", "default": "Discover the House" },
+    { "type": "url", "id": "link", "label": "Link" }
+  ],
+  "presets": [{ "name": "FAF feature" }]
+}
+{% endschema %}

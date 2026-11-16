@@ -1,0 +1,153 @@
+{% comment %}
+  House of FAF: ribbon. A calm, static line of up to four short phrases separated by small diamonds.
+  Stacks on phones; one line from tablet up (from small desktop when there are four phrases).
+  A quieter alternative to the scrolling marquee.
+{% endcomment %}
+
+{% liquid
+  assign count = 0
+  for i in (1..4)
+    assign item_key = 'item_' | append: i
+    if section.settings[item_key] != blank
+      assign count = count | plus: 1
+    endif
+  endfor
+%}
+
+{% if count > 0 %}
+  <div class="faf-ribbon faf-ribbon--{{ section.settings.tone }} faf-ribbon--count-{{ count }}">
+    <ul class="faf-ribbon__list" role="list">
+      {% for i in (1..4) %}
+        {% assign item_key = 'item_' | append: i %}
+        {% if section.settings[item_key] != blank %}
+          <li class="faf-ribbon__item">{{ section.settings[item_key] | escape }}</li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}
+
+{% stylesheet %}
+  .faf-ribbon {
+    padding: 22px 20px;
+    text-align: center;
+  }
+
+  .faf-ribbon--noir {
+    background: #000;
+    color: #fff;
+  }
+
+  .faf-ribbon--stone {
+    background: var(--faf-stone);
+    color: #000;
+  }
+
+  .faf-ribbon--paper {
+    background: #fff;
+    color: #000;
+  }
+
+  .faf-ribbon__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .faf-ribbon__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-accent--family);
+    font-weight: var(--font-accent--weight);
+    font-size: 0.75rem;
+    line-height: 1.4;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  /* Small diamond before every phrase but the first */
+  .faf-ribbon__item + .faf-ribbon__item::before {
+    content: '';
+    flex: 0 0 auto;
+    width: 5px;
+    height: 5px;
+    background: currentColor;
+    opacity: 0.6;
+    transform: rotate(45deg);
+  }
+
+  @media screen and (min-width: 750px) {
+    .faf-ribbon {
+      padding: 20px 40px;
+    }
+
+    .faf-ribbon:not(.faf-ribbon--count-4) .faf-ribbon__list,
+    .faf-ribbon:not(.faf-ribbon--count-4) .faf-ribbon__item {
+      flex-direction: row;
+      justify-content: center;
+    }
+
+    .faf-ribbon:not(.faf-ribbon--count-4) .faf-ribbon__list {
+      gap: 0;
+    }
+
+    .faf-ribbon:not(.faf-ribbon--count-4) .faf-ribbon__item {
+      gap: 28px;
+    }
+
+    .faf-ribbon:not(.faf-ribbon--count-4) .faf-ribbon__item + .faf-ribbon__item {
+      margin-inline-start: 28px;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .faf-ribbon--count-4 .faf-ribbon__list,
+    .faf-ribbon--count-4 .faf-ribbon__item {
+      flex-direction: row;
+      justify-content: center;
+    }
+
+    .faf-ribbon--count-4 .faf-ribbon__list {
+      gap: 0;
+    }
+
+    .faf-ribbon--count-4 .faf-ribbon__item {
+      gap: 28px;
+    }
+
+    .faf-ribbon--count-4 .faf-ribbon__item + .faf-ribbon__item {
+      margin-inline-start: 28px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "FAF ribbon",
+  "class": "faf-section",
+  "settings": [
+    { "type": "text", "id": "item_1", "label": "Phrase 1", "default": "Ready-to-wear" },
+    { "type": "text", "id": "item_2", "label": "Phrase 2", "default": "Timeless pieces" },
+    { "type": "text", "id": "item_3", "label": "Phrase 3", "default": "Modern feminine" },
+    { "type": "text", "id": "item_4", "label": "Phrase 4", "info": "Optional. With four phrases the line stacks until small desktop width." },
+    {
+      "type": "select",
+      "id": "tone",
+      "label": "Background",
+      "options": [
+        { "value": "noir", "label": "Black" },
+        { "value": "stone", "label": "Stone" },
+        { "value": "paper", "label": "White" }
+      ],
+      "default": "noir"
+    }
+  ],
+  "presets": [{ "name": "FAF ribbon" }]
+}
+{% endschema %}

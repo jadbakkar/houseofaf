@@ -1,0 +1,60 @@
+{% doc %}
+  Opening screen: a plain white page with the words HOUSE OF FAF, shown briefly
+  once per browser session on the home page.
+  @example
+  {% render 'faf-intro' %}
+{% enddoc %}
+
+{%- if template.name == 'index' and request.design_mode == false -%}
+  <div class="faf-intro" id="faf-intro" aria-hidden="true">
+    <span class="faf-intro__word">House of FAF</span>
+  </div>
+
+  <script>
+    (function () {
+      var el = document.getElementById('faf-intro');
+      if (!el) return;
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce) { el.remove(); return; }
+      function close() {
+        el.classList.add('is-leaving');
+        setTimeout(function () { el.remove(); }, 700);
+      }
+      var t = setTimeout(close, 1500);
+      el.addEventListener('click', function () { clearTimeout(t); close(); });
+    })();
+  </script>
+{%- endif -%}
+
+{% stylesheet %}
+  .faf-intro {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: grid;
+    place-items: center;
+    background: #fff;
+    color: #1a1a1a;
+    cursor: pointer;
+    transition: opacity 0.6s ease;
+  }
+
+  .faf-intro.is-leaving {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .faf-intro__word {
+    color: #6e1423;
+    font-size: clamp(1.1375rem, 2.6vw, 1.4625rem);
+    letter-spacing: 0.5em;
+    padding-inline-start: 0.5em;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: faf-intro-fade 0.7s 0.1s ease forwards;
+  }
+
+  @keyframes faf-intro-fade {
+    to { opacity: 1; }
+  }
+{% endstylesheet %}

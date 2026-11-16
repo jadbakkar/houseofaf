@@ -1,0 +1,261 @@
+{% comment %}
+  House of FAF: editorial pair. Two images side by side.
+  Layout "large" fills the width. Layout "inset" is a small, staggered pair on white space
+  with an optional italic line, sized for modest source images.
+  Optional per image: a caption (small label and an italic line) and a link that makes the whole tile clickable.
+  Demo images come from theme assets until real ones are picked.
+{% endcomment %}
+
+{% liquid
+  assign captioned = false
+  for i in (1..2)
+    assign eyebrow_key = 'eyebrow_' | append: i
+    assign caption_key = 'caption_' | append: i
+    if section.settings[eyebrow_key] != blank or section.settings[caption_key] != blank
+      assign captioned = true
+    endif
+  endfor
+  assign layout = section.settings.layout | default: 'large'
+  if layout == 'inset'
+    assign image_sizes = '(min-width: 750px) 320px, 45vw'
+  else
+    assign image_sizes = '(min-width: 750px) 50vw, 100vw'
+  endif
+
+  # Large layout: each column is as wide as its photo's proportions,
+  # so both uncropped photos end up exactly the same height.
+  assign ratio_1 = section.settings.image_1.aspect_ratio | default: section.settings.demo_ratio_1 | default: 0.75
+  assign ratio_2 = section.settings.image_2.aspect_ratio | default: section.settings.demo_ratio_2 | default: 0.75
+%}
+
+<div
+  class="faf-editorial faf-editorial--{{ layout }}{% if captioned %} faf-editorial--captioned{% endif %}"
+  {% if layout == 'large' %}
+    style="--faf-editorial-columns: {{ ratio_1 }}fr {{ ratio_2 }}fr;"
+  {% endif %}
+>
+  {% if layout == 'inset' and section.settings.text != blank %}
+    <p class="faf-tagline faf-editorial__text">{{ section.settings.text | escape }}</p>
+  {% endif %}
+  {% for i in (1..2) %}
+    {% liquid
+      assign image_key = 'image_' | append: i
+      assign eyebrow_key = 'eyebrow_' | append: i
+      assign caption_key = 'caption_' | append: i
+      assign link_key = 'link_' | append: i
+      assign image = section.settings[image_key]
+      assign eyebrow = section.settings[eyebrow_key]
+      assign caption = section.settings[caption_key]
+      assign link = section.settings[link_key]
+      assign demo_key = 'demo_image_' | append: i
+      assign fallback = section.settings[demo_key]
+
+      assign has_caption = false
+      if eyebrow != blank or caption != blank
+        assign has_caption = true
+      endif
+
+      # A link needs a readable name: the caption, or the picked image's alt text
+      assign is_link = false
+      if link != blank
+        if has_caption or image.alt != blank
+          assign is_link = true
+        endif
+      endif
+    %}
+    {% if is_link %}
+      <a class="faf-editorial__cell faf-editorial__cell--{{ i }} faf-editorial__cell--link" href="{{ link }}">
+    {% else %}
+      <div class="faf-editorial__cell faf-editorial__cell--{{ i }}">
+    {% endif %}
+    <div class="faf-editorial__item">
+      {% if image != blank %}
+        {{
+          image
+          | image_url: width: 1800
+          | image_tag:
+            widths: '500, 800, 1200, 1800',
+            sizes: image_sizes,
+            class: 'faf-editorial__image',
+            loading: 'lazy',
+            alt: image.alt
+        }}
+      {% elsif fallback != blank %}
+        <img
+          class="faf-editorial__image"
+          src="{{ fallback | asset_url }}"
+          alt=""
+          loading="lazy"
+          width="784"
+          height="968"
+        >
+      {% endif %}
+    </div>
+    {% if has_caption %}
+      <div class="faf-editorial__caption">
+        {% if eyebrow != blank %}
+          <p class="faf-eyebrow">{{ eyebrow | escape }}</p>
+        {% endif %}
+        {% if caption != blank %}
+          <p class="faf-editorial__line">{{ caption | escape }}</p>
+        {% endif %}
+      </div>
+    {% endif %}
+    {% if is_link %}
+      </a>
+    {% else %}
+      </div>
+    {% endif %}
+  {% endfor %}
+</div>
+
+{% stylesheet %}
+  .faf-editorial {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    gap: 8px;
+    padding: 8px;
+    background: #fff;
+  }
+
+  /* Large: columns follow the photos' proportions so both share one height, uncropped.
+     Capped so modest source files are not stretched past their size. */
+  .faf-editorial--large {
+    grid-template-columns: var(--faf-editorial-columns, 1fr 1fr);
+    max-width: 1280px;
+    margin-inline: auto;
+  }
+
+  .faf-editorial__cell {
+    display: block;
+    min-width: 0;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  /* Photos keep their own proportions: never cropped */
+  .faf-editorial__item {
+    overflow: hidden;
+  }
+
+  .faf-editorial__image {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .faf-editorial--captioned {
+    padding-bottom: 32px;
+  }
+
+  .faf-editorial__caption {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 14px 4px 0;
+  }
+
+  .faf-editorial__line {
+    margin: 0;
+    font-family: var(--font-heading--family);
+    font-style: italic;
+    font-size: clamp(1rem, 0.9rem + 0.45vw, 1.3125rem);
+    line-height: 1.35;
+  }
+
+  .faf-editorial__cell--link:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 4px;
+  }
+
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .faf-editorial__cell--link .faf-editorial__image {
+      transition: transform 1.2s cubic-bezier(0.2, 0.6, 0.2, 1);
+    }
+
+    .faf-editorial__cell--link:hover .faf-editorial__image {
+      transform: scale(1.03);
+    }
+  }
+
+  @media screen and (min-width: 750px) {
+    .faf-editorial--captioned {
+      padding-bottom: 56px;
+    }
+
+    .faf-editorial__caption {
+      gap: 8px;
+      padding: 20px 8px 0;
+    }
+  }
+
+  /* Inset: a small staggered pair on white space */
+  .faf-editorial--inset {
+    gap: 12px;
+    padding: 64px 16px 72px;
+  }
+
+  .faf-editorial__text {
+    grid-column: 1 / -1;
+    max-width: 30ch;
+    margin: 0 auto 24px;
+    text-align: center;
+    text-wrap: balance;
+  }
+
+  .faf-editorial--inset .faf-editorial__cell--2 {
+    margin-top: 40px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .faf-editorial--inset {
+      grid-template-columns: repeat(2, minmax(0, 320px));
+      justify-content: center;
+      align-items: start;
+      gap: clamp(32px, 5vw, 72px);
+      padding: 112px 40px 128px;
+    }
+
+    .faf-editorial__text {
+      margin-bottom: 48px;
+    }
+
+    .faf-editorial--inset .faf-editorial__cell--2 {
+      margin-top: 96px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "FAF editorial pair",
+  "class": "faf-section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout",
+      "options": [
+        { "value": "large", "label": "Large, full width" },
+        { "value": "inset", "label": "Small, on white space" }
+      ],
+      "default": "large"
+    },
+    { "type": "textarea", "id": "text", "label": "Italic line above", "visible_if": "{{ section.settings.layout == 'inset' }}" },
+    { "type": "image_picker", "id": "image_1", "label": "Left image" },
+    { "type": "text", "id": "demo_image_1", "label": "Left demo image file", "info": "Used until an image is picked above.", "default": "faf-demo-hero-new.jpg" },
+    { "type": "text", "id": "demo_ratio_1", "label": "Left demo image proportions", "info": "Width divided by height, for example 0.75. Picked images measure themselves.", "default": "0.75" },
+    { "type": "text", "id": "eyebrow_1", "label": "Left small label", "info": "Optional, for example: Look 01" },
+    { "type": "text", "id": "caption_1", "label": "Left italic line", "info": "Optional" },
+    { "type": "url", "id": "link_1", "label": "Left link", "info": "Optional. Makes the image and caption clickable." },
+    { "type": "image_picker", "id": "image_2", "label": "Right image" },
+    { "type": "text", "id": "demo_image_2", "label": "Right demo image file", "info": "Used until an image is picked above.", "default": "faf-guide-staircase.jpg" },
+    { "type": "text", "id": "demo_ratio_2", "label": "Right demo image proportions", "info": "Width divided by height, for example 0.75. Picked images measure themselves.", "default": "0.642" },
+    { "type": "text", "id": "eyebrow_2", "label": "Right small label", "info": "Optional, for example: Look 02" },
+    { "type": "text", "id": "caption_2", "label": "Right italic line", "info": "Optional" },
+    { "type": "url", "id": "link_2", "label": "Right link", "info": "Optional. Makes the image and caption clickable." }
+  ],
+  "presets": [{ "name": "FAF editorial pair" }]
+}
+{% endschema %}

@@ -1,0 +1,143 @@
+{% comment %}
+  House of FAF: size table. One block per row. Scrolls horizontally on small screens.
+{% endcomment %}
+
+<div class="faf-size">
+  <div class="faf-size__inner">
+    <div class="faf-size__scroll" tabindex="0" role="region" aria-label="{{ section.settings.caption | escape }}">
+      <table class="faf-size__table">
+        <caption class="visually-hidden">{{ section.settings.caption }}</caption>
+        <thead>
+          <tr>
+            <th scope="col">{{ section.settings.head_size }}</th>
+            <th scope="col">{{ section.settings.head_bust }}</th>
+            <th scope="col">{{ section.settings.head_waist }}</th>
+            <th scope="col">{{ section.settings.head_hips }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for block in section.blocks %}
+            <tr {{ block.shopify_attributes }}>
+              <th scope="row">{{ block.settings.size }}</th>
+              <td>{{ block.settings.bust }}</td>
+              <td>{{ block.settings.waist }}</td>
+              <td>{{ block.settings.hips }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% if section.settings.note != blank %}
+      <p class="faf-tagline faf-size__note">{{ section.settings.note }}</p>
+    {% endif %}
+  </div>
+</div>
+
+{% stylesheet %}
+  .faf-size {
+    padding: 16px 20px 64px;
+    background: #f5f5f5;
+    color: #000;
+  }
+
+  .faf-size__inner {
+    max-width: 760px;
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .faf-size__scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .faf-size__scroll:focus-visible {
+    outline: 2px solid var(--faf-red);
+    outline-offset: 2px;
+  }
+
+  .faf-size__table {
+    width: 100%;
+    min-width: 320px;
+    border-collapse: collapse;
+    text-align: center;
+  }
+
+  .faf-size__table th,
+  .faf-size__table td {
+    padding: 18px 12px;
+    border-bottom: 1px solid #000;
+    font-family: var(--font-body--family);
+    font-size: 0.9375rem;
+    font-weight: 400;
+  }
+
+  .faf-size__table thead th {
+    border-top: 1px solid #000;
+    font-family: var(--font-accent--family);
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .faf-size__table tbody th {
+    font-family: var(--font-heading--family);
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+  }
+
+  .faf-size__note {
+    margin: 0;
+    text-align: center;
+    font-size: 1.05rem;
+  }
+
+  @media screen and (min-width: 750px) {
+    .faf-size {
+      padding-bottom: 104px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "FAF size table",
+  "class": "faf-section",
+  "settings": [
+    { "type": "text", "id": "caption", "label": "Table caption (screen readers)", "default": "Size guide, measurements in centimetres" },
+    { "type": "text", "id": "head_size", "label": "Column 1", "default": "Size" },
+    { "type": "text", "id": "head_bust", "label": "Column 2", "default": "Bust" },
+    { "type": "text", "id": "head_waist", "label": "Column 3", "default": "Waist" },
+    { "type": "text", "id": "head_hips", "label": "Column 4", "default": "Hips" },
+    { "type": "text", "id": "note", "label": "Italic note", "default": "Demo measurements. To be replaced with the final size chart." }
+  ],
+  "blocks": [
+    {
+      "type": "row",
+      "name": "Size row",
+      "settings": [
+        { "type": "text", "id": "size", "label": "Size", "default": "XS" },
+        { "type": "text", "id": "bust", "label": "Bust", "default": "80" },
+        { "type": "text", "id": "waist", "label": "Waist", "default": "62" },
+        { "type": "text", "id": "hips", "label": "Hips", "default": "88" }
+      ]
+    }
+  ],
+  "max_blocks": 16,
+  "presets": [
+    {
+      "name": "FAF size table",
+      "blocks": [
+        { "type": "row", "settings": { "size": "XS", "bust": "80", "waist": "62", "hips": "88" } },
+        { "type": "row", "settings": { "size": "S", "bust": "84", "waist": "66", "hips": "92" } },
+        { "type": "row", "settings": { "size": "M", "bust": "88", "waist": "70", "hips": "96" } },
+        { "type": "row", "settings": { "size": "L", "bust": "94", "waist": "76", "hips": "102" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
